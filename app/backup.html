@@ -5,14 +5,17 @@
     height: auto;
 }
 
-#success_{        
-    color: #FFF;
+#success_{
+    background-color: #FFF;
+    border-radius: 15px;
+    color: #000;
     display: none;
     padding: 20px;
     width: 400px;
-    height: 150px;    
-    font-size:19px;
-    text-align: center;     
+    height: 150px;
+    font-size:large;
+    text-align: center;
+    padding-top: 50px;  
 }
 
 .b-close{
@@ -181,7 +184,8 @@
 <div id="loading_">
     <img src="/documents/45516/49001/Esfera-Loading-62156.gif">
 </div>
-<div id="success_">    
+<div id="success_">
+    <a class="b-close">X</a>    
     No se econtraron registros, intente con otro criterio de búsqueda.<br>      
 </div>
     
@@ -272,14 +276,14 @@
 	'<div class="info-gral">'+
 	'<p class="info-nombre">'+p.nombre +'</p>'+
 	'<p>'+utilValida(p.redPreferencia,'Red Preferencia')+'</p>'+
-	'<p>'+utilValida(p.plan,'Plan')+' '+utilValida(p.gama,'Gama')+' / Especialidad</p>'+
+	'<p>'+utilValida(p.plan,'Plan')+','+utilValida(p.gama,'Gama')+' / Especialidad</p>'+
 	'</div>'+
 	'<div><img src="/documents/47849/49735/location-icon.png/df4bcb6b-501e-4cd4-94cb-7476c78c3b0f?t=1453767668000"/></div>'+
 	'<div class="info-dir">'+
-	'<p>'+utilValida(dir.calle,'Calle')+'/Num Ext:'+dir.numeroExterior+''+utilValida(dir.numeroInterior,'/Num Int')+'</p>'+
-	'<p>'+utilValida(dir.colonia,'Colonia')+'</p>'+
-	'<p>'+utilValida(dir.municipio,'Delegación/Municipio')+'</p>'+
-	'<p>'+utilValida(dir.estado,'Estado')+'</p>'+
+	'<p>'+dir.calle+'/Num Ext.'+dir.numeroExterior+'/Num Int.'+utilValida(dir.numeroInterior,'')+'</p>'+
+	'<p>'+dir.colonia+'</p>'+
+	'<p>'+dir.municipio+'</p>'+
+	'<p>'+dir.estado+'</p>'+
 	'</div>'+
 	'<div><img src="/documents/47849/49735/clock-icon.png/50bbafe9-8390-4ecc-8f8a-bce85c7fc795?t=1453767665000"/></div>'+
 	'<div class="info-horarios">'+
@@ -333,10 +337,8 @@
                 if(p.direccion !== null ){
                     dir = p.direccion[0];
                     if(dir.latitud !== null && dir.longitud !== null ){
-                        var ltg = new google.maps.LatLng(dir.latitud,dir.longitud);
-                        map.setCenter(ltg);
                         marker = new google.maps.Marker({
-                            position: ltg,
+                            position: new google.maps.LatLng(dir.latitud,dir.longitud),
                             map: map,
                             title:p.nombre,
                             icon: '/documents/47849/49735/Map-Marker-Marker-Outside-Pink-icon+%281%29.png/4c7e5a53-0bbb-4491-a4eb-5b756e2e35b5?t=1453767669000'
@@ -355,7 +357,7 @@
         };        
          
         $scope.noRecords = function(){
-          $('#success_').bPopup({modalClose: true,opacity: 0.3,positionStyle: 'fixed'});  
+          $('#success_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});  
         };
         $scope.getPrestadores = function(){		        
 		        $scope.argsPrestadores.prestadoresArgs = $scope.prestadoresArgs;
