@@ -1,0 +1,472 @@
+<style>
+#loading_{    
+    display: none;    
+    width: auto;
+    height: auto;
+}
+
+#success_{
+    background-color: #FFF;
+    border-radius: 15px;
+    color: #000;
+    display: none;
+    padding: 20px;
+    width: 400px;
+    height: 150px;
+    font-size:large;
+    text-align: center;
+    padding-top: 50px;  
+}
+
+.b-close{
+    cursor:pointer;
+    position:absolute;
+    right:10px;
+    top:5px;
+    font-size: large;
+}
+</style>
+<div ng-app="web_App" ng-controller="prestadoresAXACtrl">
+    
+<div class="map-wrapper">
+		<div class="map-search">
+			<div class="container">
+				<div class="search-shadow" style="display: none;"></div>
+				<span class="select-button display-desktop">
+					<button class="advanced-search-button">
+						<i class="fa fa-align-justify"></i>
+					</button>
+				</span>
+				<span class="select-button mobile-search">
+					<button class="mobile-search-button">
+						<i class="fa fa-search"></i>
+					</button>
+				</span>
+				<form  class="default-form search-bar">
+					<span class="company_name">
+                                            <input  ng-model="prestadoresArgs.nombreComun"  type="text" 
+                                                    placeholder="Nombre Común"
+                                                    typeahead-on-select="prestadoresArgs.nombreComun =  $item.nombre"
+                                                    typeahead="opt.nombre for opt in listaPrestadores | filter:$viewValue | limitTo:10"
+                                                    >
+					</span>
+					<span class="location select-box select-style">
+                                            <select name="Select_Location" data-placeholder="Selecciona un Estado"  ng-model="selectedEstado" 
+                                                    ng-options="opt as opt.label for opt in listaDeEstados" ng-change="prestadoresArgs.estado=selectedEstado.value;getListaDelegacion(selectedEstado.value)" >
+                                                    <option value="">Selecciona un Estado</option>
+                                            </select>
+					</span>
+
+					<span class="category  select-box select-style">
+                                            <select name="Select_Category" data-placeholder="Selecciona un Municipio" ng-model="selectedMunicipio" 
+                                                    ng-options="opt as opt.label for opt in listaDelegaciones" ng-change="prestadoresArgs.delegacionMunicipio = selectedMunicipio.value" >
+                                                    <option value="">Selecciona un Municipio</option>
+                                            </select>
+					</span>
+					<span class="submit-btn">
+                                            <button class="btn btn-secondary full-width" ng-click="getPrestadores()" ><i class="fa fa-search"></i>Buscar</button>                                            
+					</span>
+				</form>
+			</div>
+			<!-- BUSQUEDA POR RAMO INICIA -->
+			<div class="advanced-search" style="display: none;">
+				<div class="axamx-prestadores">
+					<ul class="axa-servicios">
+						<li class="axa-servicios-group">
+							<img src="/documents/45516/49521/icon_quick-links_medicos.png/acff8821-7697-4313-9ab8-f37c2ce5a4cb?t=1453767667000">
+							<h5>Servicios de Salud</h5>
+							<ul class="axa-subservicios">
+								<li ng-click="setTipoPrestador(0)">
+									<a id="axa-medico">Médicos</a>
+								</li>
+								<li ng-click="setTipoPrestador(1)">
+									<a id="axa-hospitales">Hospitales</a>
+								</li>
+								<li ng-click="setTipoPrestador(2)">
+									<a id="axa-modulos">Módulos Hospitalarios</a>
+								</li>
+								<li ng-click="setTipoPrestador(3)">
+									<a id="axa-aux">Servicios Auxiliares</a>
+								</li>
+							</ul>
+						</li>
+						<li class="axa-servicios-group">
+							<img src="/documents/45516/49521/icon_quick-links_car.png/0b223157-015d-46d6-b1fe-5d43d09c67e5?t=1453767667000">
+							<h5>Servicios para Auto</h5>
+							<ul class="axa-subservicios">
+                                                            <li ng-click="setTipoPrestador(4)">
+									<a>Auto Consentido</a>
+                                                            </li>
+                                                            <li ng-click="setTipoPrestador(5)">
+									<a>Auto con Chofer</a>
+                                                            </li>
+                                                            <li ng-click="setTipoPrestador(6)">
+									<a>Talleres</a>
+                                                            </li>
+                                                            <li ng-click="setTipoPrestador(7)">
+									<a>Cristaleras</a>
+                                                            </li>
+							</ul>
+						</li>
+						<li class="axa-servicios-group">
+							<img src="/documents/45516/49521/icon_quick-links_travel.png/df0e4fa4-c5fa-416a-b4e9-47303f9ef2c2?t=1453767668000">
+							<h5>Otros Servicios</h5>
+							<ul class="axa-subservicios">
+								<li ng-click="setTipoPrestador(9)">
+									<a>Ventanillas</a>
+								</li>
+								<li ng-click="setTipoPrestador(8)">
+									<a>Agentes</a>
+								</li>
+								<li ng-click="setTipoPrestador(10)">
+									<a>Tiendas AXA</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!--BUSQUEDA POR RAMO TERMINA -->
+		</div>
+</div>
+
+
+<div class="axamx-background">
+
+
+		<div id="map" style="width:100%;height:487px;"></div>
+		<div class="type-selector">
+			<div class="type-selector-map active">
+				<i class="fa fa-map-o fa-lg"></i>
+			</div>
+			<div class="type-selector-accordion">
+				<i class="fa fa-list-ul fa-lg"></i>
+			</div>
+		</div>
+</div>
+
+<div class="service-list">
+		<div class="container">
+		
+			<div id="myToggler" >
+                            <div ng-repeat="li in listaPrestadores" >
+                                <h4 class="header toggler-header-collapsed" ng-bind="li.nombre" ></h4>
+				<div class="content toggler-content-collapsed">
+							<div class="info-gral">
+								<p class="info-nombre">Nombre Común</p>
+                                                                <p ng-bind="li.nombre" ></p>
+								<p>{{li.plan }} y {{ li.gama }} / Especialidad</p>
+							</div>
+							<div class="info-dir">
+								<p>Nombre Calle Ext/Int</p>
+								<p>Colonia Nombre</p>
+								<p>Delegación Nombre</p>
+								<p>Estado</p>
+							</div>
+							<div class="info-horarios">
+                                                            <p ng-bind="'Horario 1:' + li.horarioAtencion1" ></p>
+                                                            <p ng-bind="'Horario 2:' + li.horarioAtencion2"> </p>
+							</div>
+							<div class="info-tel">
+                                                                <p>Tel1. 55 5555 5555</p>
+								<p>Tel2. 55 5555 5555</p>
+								<p>Cel1. 55 5555 5555</p>
+							</div>
+							<div class="info-mail">
+                                                            <a href="#" ng-bind="li.emails[0].email"> </a>                                                            
+							</div>	
+				</div>			
+                            </div>
+                        </div>
+			
+		</div>
+</div>
+<div id="loading_">
+    <img src="/documents/45516/49001/Esfera-Loading-62156.gif">
+</div>
+<div id="success_">
+    <a class="b-close">X</a>    
+    No se econtraron registros, intente con otro criterio de búsqueda.<br>      
+</div>
+    
+</div>
+
+<script src="/documents/45516/49575/bootstrap.min.js/c0bd4f9b-a848-4044-b606-4fb4209121a0"></script>
+<script src="/documents/45516/45726/angular.min.js"></script>
+<script src="/documents/45516/45726/angular-animate.min.js"></script>
+<script src="/documents/45516/45726/angular-cookies.min.js"></script>
+<script src="/documents/45516/45726/angular-resource.min.js"></script>
+<script src="/documents/45516/45726/angular-route.min.js"></script>
+<script src="/documents/45516/45726/angular-sanitize.min.js"></script>
+<script src="/documents/45516/45726/angular-touch.min.js"></script>
+<script src="/documents/45516/45726/jquery.bpopup.min.js"></script>
+<script src="/documents/45516/45726/ui-bootstrap-tpls-0.12.0.min.js"></script>
+
+<script>
+     var app = angular.module('web_App', ['ngCookies','ngResource','ngRoute','ngSanitize','ngAnimate','ui.bootstrap']);
+     app.controller('prestadoresAXACtrl',['$scope','$http','$filter','$q',
+         function($scope,$http,$filter,$q){
+
+        $scope.metodo = [{type:"POST"}];   
+        
+        $scope.catalogos = [
+            {name:"CATESTADO"},
+            {name:"CATMUNICIPIO"},
+            {name:"CATIPOPRESTADOR"}];    
+                    
+        //Lista tipo de prestador
+        $scope.lTP = [
+                {tp:"HOSPITALES"},//0
+                {tp:"MEDICOS"},//1
+                {tp:"MODULOS HOSPITALARIOS"},//2
+                {tp:"SERVICIOS AUXILIARES"},//3
+                {tp:"AUTO CONSENTIDO"},//4
+                {tp:"AUTO CON CHOFER"},//5
+                {tp:"TALLERES"},//6
+                {tp:"CRISTALERAS"},//7
+                {tp:"AGENTES"},//8
+                {tp:"VIAS"},//9
+                {tp:"TIENDAS AXA"}//10
+        ];            
+        
+        $scope.rutas = [
+                {url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getCatalogosRequest"},
+                {url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getPrestadoresServicio"}
+            ];
+            
+        $scope.prestadoresArgs ={
+                estado:"2",
+                delegacionMunicipio:"",
+                nombreComun:"",
+                especialidad:"",
+                tipoPrestador:"",
+                rfc:""
+        };
+
+        $scope.argsPrestadores = {
+		        esAgentes:false,
+		        prestadoresArgs:{}
+                    };  
+
+        
+        $scope.getListaEstado = function (){
+            $scope.args = {};
+            $scope.args.cveCatalogo=$scope.catalogos[0].name; 
+            try{
+            $http({
+                    method:$scope.metodo[0].type,
+                    data  :$scope.args,
+                    url   :$scope.rutas[0].url
+            }).success(function(data){
+                $scope.listaDeEstados = data.listaCatalogos;
+                console.log("obteniendo datos de estados");
+            });        
+            }catch(e){
+                console.log("Error al consultar estados");
+            }    
+        };        
+        $scope.getListaEstado();
+        
+        $scope.getListaDelegacion = function(idestado){    
+            if(idestado !== "" || idestado !== " "){
+            $scope.args = {};
+            $scope.args.catalogoDominio = idestado;
+            $scope.args.cveCatalogo=$scope.catalogos[1].name; 
+            try{
+                $http({
+                    method:$scope.metodo[0].type,
+                    data  :$scope.args,
+                    url   :$scope.rutas[0].url
+                }).success(function(data){
+                    $scope.listaDelegaciones = data.listaCatalogos;
+                    console.log("obteniendo datos de delegacion");
+                }); 
+            }catch(e){
+                    console.log("Error al consultar delegaciones");
+            }
+            }
+        };                    
+              
+        function setContentValue(p){
+	var contentString =
+	'<div class="info-tag">'+
+	'<div><img src="/documents/47849/49735/Star-icon.png/cf1810e3-fe35-40e9-8252-edf9212f8ef0?t=1453767670000"/></div>'+
+	'<div class="info-gral">'+
+	'<p class="info-nombre">'+p.nombre +'</p>'+
+	'<p>Nombre del Agente</p>'+
+	'<p>Plan:'+p.plan+' ,Gama:'+p.gama+' / Especialidad</p>'+
+	'</div>'+
+	'<div><img src="/documents/47849/49735/location-icon.png/df4bcb6b-501e-4cd4-94cb-7476c78c3b0f?t=1453767668000"/></div>'+
+	'<div class="info-dir">'+
+	'<p>'+p.direccion[0].calle+'/Num Ext.'+p.direccion[0].numeroExterior+'</p>'+
+	'<p>'+p.direccion[0].colonia+'</p>'+
+	'<p>'+p.direccion[0].municipio+'</p>'+
+	'<p>'+p.direccion[0].estado+'</p>'+
+	'</div>'+
+	'<div><img src="/documents/47849/49735/clock-icon.png/50bbafe9-8390-4ecc-8f8a-bce85c7fc795?t=1453767665000"/></div>'+
+	'<div class="info-horarios">'+
+	'<p>Horario 1:'+p.horarioAtencion1+' </p>'+
+	'<p>Horario 2:'+p.horarioAtencion2+'</p>'+
+	'</div>'+
+	'<div><img src="/documents/47849/49735/phone-icon.png/7741e82e-c3dc-424f-ae8e-6ecdb6a35b59?t=1453767670000"/></div>'+
+	'<div class="info-tel">'+
+	'<p>Tel1. 55 5555 5555</p>'+
+	'<p>Tel2. 55 5555 5555</p>'+
+	'<p>Cel. 55 5555 5555</p>'+
+	'</div>'+
+	'<div><img src="/documents/47849/49735/mail-icon.png/b77e4878-eba9-4f4a-950c-399151557e5f?t=1453767669000"/></div>'+
+	'<div class="info-mail">'+
+	'<a href="#">'+p.emails[0].email+'</a>'+
+	'</div>'+
+	'</div>';    
+        
+        return contentString;
+        };
+
+        var mexico = {lat: 19.372982, lng: -99.173814}; 
+        
+        var map = new google.maps.Map(document.getElementById('map'), {
+		zoom: 10,
+		center: mexico,
+		scrollwheel: false,
+		mapTypeControl: false
+        });
+        
+        var infowindow = new google.maps.InfoWindow();
+        var marker, i;
+        var p;
+        var dir;
+        
+        var markers = [];
+        
+        function clearMarkers() {
+            for(var i=0; i<markers.length; i++){
+                markers[i].setMap(null);
+            }
+            markers = [];
+        };
+        
+        $scope.listaPrestadores = [];  
+        
+        function loadMarkers(){              
+            clearMarkers();
+            for(i = 0; i < $scope.listaPrestadores.length ;i++){                
+                p = $scope.listaPrestadores[i];
+                if(p.direccion !== null ){
+                    dir = p.direccion[0];
+                    if(dir.latitud !== null && dir.longitud !== null ){
+                        marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(dir.latitud,dir.longitud),
+                            map: map,
+                            title:p.nombre,
+                            icon: '/documents/47849/49735/Map-Marker-Marker-Outside-Pink-icon+%281%29.png/4c7e5a53-0bbb-4491-a4eb-5b756e2e35b5?t=1453767669000'
+                        });
+                        google.maps.event.addListener(marker, 'click', (
+                                function(marker) { 
+                                    return function() { 
+                                        infowindow.setContent(setContentValue(p)); 
+                                        infowindow.open(map, marker); 
+                                    }; 
+                                })(marker, i));                                                                
+                    markers.push(marker);                        
+                    }  
+                }                                             
+            }             
+        };        
+         
+        $scope.noRecords = function(){
+          $('#success_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});  
+        };
+        $scope.getPrestadores = function(){		        
+		        $scope.argsPrestadores.prestadoresArgs = $scope.prestadoresArgs;
+                        
+                            var cargando = $('#loading_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});
+                            try{
+                                $http({
+			             method :$scope.metodo[0].type,
+			             data   :$scope.argsPrestadores,
+			             url    :$scope.rutas[1].url
+                                }).success(function(data){                                    
+                                    if(data.estatus.success){
+                                        $scope.listaPrestadores = data.prestadorServicio; 
+                                        loadMarkers();    
+                                        cargando.close();
+                                    }else{
+                                        cargando.close();
+                                        $scope.listaPrestadores=[];
+                                        $scope.noRecords();
+                                    }                                        
+                                    console.log(data);                            
+                                });           
+                                $scope.argsPrestadores.esAgentes = false;
+                            }catch(e){
+                                console.log("Error al consultar prestadores");
+                            } 
+                        $scope.prestadoresArgs.nombreComun = "";
+                            
+        }; 
+        
+        $scope.listaTipoPrestadores = [];        
+        $scope.getTipoPrestadores = function(){
+            $scope.args = {};    
+            $scope.args.cveCatalogo=$scope.catalogos[2].name; 
+            try{
+                $http({ 
+                    method:$scope.metodo[0].type,
+                    data:  $scope.args,
+                    url :  $scope.rutas[0].url
+                }).success(function(data){
+                    $scope.listaTipoPrestadores = data.listaCatalogos;                    
+                    console.log("obteniendo lista de tipos de prestador");
+                });
+            }catch(e){
+                console.log("Error al consultar tipos de prestador"); 
+            }  
+        };
+        
+        $scope.getTipoPrestadores();
+        
+        $scope.setTipoPrestador = function (cvTipPrestador){
+            if(cvTipPrestador !== ""){
+                var $tipoPredorId = $filter('filter')($scope.listaTipoPrestadores,
+                {label : $scope.lTP[cvTipPrestador].tp},true);
+                $scope.prestadoresArgs.tipoPrestador = $tipoPredorId[0].value;
+                console.log("cve: "+$tipoPredorId[0].value+" label: "+$tipoPredorId[0].label);
+            }
+        };
+
+        $scope.setAgenteTAXA = function(){
+            $scope.argsPrestadores.esAgentes = true;
+        };
+        
+        $scope.getPrestadores();
+        
+	$('.collapsed').collapse({
+		toggle: true
+	});
+        
+     }]);
+ 
+ 
+function initMap(){}; 
+
+YUI().use(
+        'aui-toggler',
+         function(Y) {
+             new Y.TogglerDelegate(
+                     {
+                         animated: true,
+                 closeAllOnExpand: true,
+			        container: '#myToggler',
+			        content: '.content',
+			        expanded: false,
+			        header: '.header',
+			        transition: {
+			          duration: 0.2,
+			          easing: 'cubic-bezier(0, 0.1, 0, 1)'
+			        }
+			      }
+			    );
+    }
+);
+</script>
