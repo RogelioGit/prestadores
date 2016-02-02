@@ -1,14 +1,4 @@
  <style>            
-.toggler-header-collapsed:before {
-    content: "+";
-    margin: 0 2.5px;
-    font-size: 80%;
-}
-.toggler-header-expanded:before {
-    content: "-";
-    font-size: 120%;
-    margin: 0 2.5px;
-}
 .header:before {
     color: #A5A5A5;
     float: left;
@@ -27,13 +17,20 @@
     color:#000;
     display:none; 
     padding:20px;
-    width:800px;
-    height: 440px;
+    width:820px;
+    height: 450px;
 }
 #loading_{    
     display: none;    
     width: auto;
     height: auto;
+}
+
+#records ul{
+    display: -webkit-box;
+}
+#records ul li{
+    padding: 5px;   
 }
 #success_{
     background-color: #FFF;
@@ -42,7 +39,7 @@
     display: none;
     padding: 20px;
     width: 400px;
-    height: 150px;
+    height: 190px;
     font-size:large;
     text-align: center;
     padding-top: 50px;  
@@ -77,7 +74,7 @@
 }
 .b_contenedor_modal{
 overflow: scroll;
-height: 330px;
+height: 320px;
 }
 .b_footer_modal{
     right: 20px;
@@ -117,6 +114,14 @@ height: 330px;
       }
       .tituloPres{
           
+      }
+      .inputs{
+        height: 30px;
+        border-radius: 5px;
+        width: 100%;
+      }
+      .td_60{
+          width: 60px;
       }
 </style>
     
@@ -159,7 +164,7 @@ height: 330px;
     
         <br>
         <button class="btn btn-primary"  ng-click="mostrarBuscador = 'false'; currentTp = currentTpl; "> Nuevo Prestador </button>  	
-        <button class="btn btn-primary"  ng-click="currentTp = '';mostrarBuscador = 'true';getListaEstado()"> Buscar Prestador </button>
+        <button class="btn btn-primary"  ng-click="currentTp = '';mostrarBuscador = 'true';getListaEstado();seColumns()"> Buscar Prestador </button>
         <br>                 
         
     </div>
@@ -261,16 +266,16 @@ height: 330px;
             <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
             <tr ng-repeat="row in data">
                 <td data-title="'Nombre Comun'" ng-bind="row.nombre" ></td>
-                <td data-title="'RFC'" ng-bind="row.rfc"></td>
-                <td data-title="'Razón social'" ng-bind="row.razonSocial"></td>
-                <td data-title="'Tipo de Prestador'" ng-bind="row.tipoPrestador"></td>
-                <td data-title="'Red de Preferencia'" ng-bind="row.redPreferencia"></td>
-                <td data-title="'Plan'" ng-bind="row.plan"></td>
-                <td data-title="'Gama'" ng-bind="row.gama" ></td>
-                <td data-title="'Horario atención 1'" ng-bind="row.horarioAtencion1"></td>
-                <td data-title="'Horario atención 2'" ng-bind="row.horarioAtencion2"></td>
-                <td data-title="'Direccion'" ng-bind="row.direccion[0].codigoPostal"></td>
-                <td data-title="'Editar'" >  <a ng-click="mostrarEditar()" class="linkeditar">Editar</a> </td>
+                <td data-title="'RFC'" class="td_60" ng-bind="row.rfc"></td>
+                <td data-title="'Razón social'" ng-bind="row.razonSocial"></td>                
+                <td data-title="'Red de Preferencia'" ng-show="display[0].dis"  ng-bind="row.redPreferencia"></td>
+                <td data-title="'Plan'" ng-show="display[1].dis" ng-bind="row.plan"></td>
+                <td data-title="'Gama'" ng-show="display[2].dis" ng-bind="row.gama" ></td>
+                <td data-title="'Horario'" >Hora 1: {{row.horarioAtencion1 || ''}} <br> Hora 2:{{row.horarioAtencion2 ||'' }} </td>
+                <td data-title="'Email'" > <div ng-repeat="mail in row.emails">{{'Email '+ ($index+1)+': '+mail.email || '' }}<br></div>  </td>
+                <td data-title="'Teléfono'" ><div ng-repeat="tel in row.direccion[0].telefonos">  {{($index+1)+': '+tel.numero || '' }}<br> </div></td>
+                <td data-title="'Direccion'" ng-bind="+row.direccion[0].estado +','+row.direccion[0].municipio+', CP:'+row.direccion[0].codigoPostal +', Colonia: '+row.direccion[0].colonia +', Calle:'+row.direccion[0].calle +', Num Ext. '+row.direccion[0].numeroExterior" ></td>
+                <td data-title="'Editar'" class="td_60" >  <a ng-click="mostrarEditar()" class="linkeditar">Editar</a> </td>
             </tr>
             </table>        
         </div>
@@ -468,8 +473,7 @@ height: 330px;
         </div>
     </div>
     </div>
-  
-  
+    
 </div>    
     
 </form>                
@@ -2691,84 +2695,32 @@ height: 330px;
             $scope.prestadorTelefono = prestadorModel.getTelefono();            
             $scope.prestadorEmail = prestadorModel.getEmails();
             
-            $scope.args = {};
-            
+            $scope.args = {};            
             $scope.listaRedPref = [{label:'SI',value:'SI'},{label:'NO',value:'NO'}];
             //Claves para la consulta de catalogos
-            $scope.especialidades = [{rows:""}];
-            
-            $scope.catalogos = [
-                {name:"CATPAIS"},
-                {name:"CATESTADO"},
-                {name:"CATMUNICIPIO"},
-                {name:"CATTIPOESPECIALIDAD"},
-                {name:"CATIPOPRESTADOR"},
-                {name:"CATTIPOSERVICIO"},
-                {name:"CATRAMO"}
-            ];
-            $scope.listaRamos =[
-                {ramo:"AUTOS"},
-                {ramo:"SALUD"},
-                {ramo:"AGENTE"},
-                {ramo:"VIA"}];
-            
+            $scope.especialidades = [{rows:""}];            
+            $scope.catalogos = [{name:"CATPAIS"},{name:"CATESTADO"},{name:"CATMUNICIPIO"},{name:"CATTIPOESPECIALIDAD"},{name:"CATIPOPRESTADOR"},{name:"CATTIPOSERVICIO"},{name:"CATRAMO"}];
+            $scope.listaRamos =[{ramo:"AUTOS"},{ramo:"SALUD"},{ramo:"AGENTE"},{ramo:"VIA"}];            
             $scope.metodo = [{type:"POST"},{type:"GET"}];
-            
+            $scope.display = [{dis:false},{dis:false},{dis:false}];
             //url para las peticiones
             $scope.rutas = [
                 {url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getCatalogosRequest"},
                 {url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getPrestadoresServicio"},
                 {url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/saveOrUpdatePrestadores"},
                 {url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getRamosRequest"}
-            ];
-            
+            ];            
             //Lista tipo de prestador
-            $scope.lTP = [
-                {tp:"HOSPITALES"},//0
-                {tp:"MEDICOS"},//1
-                {tp:"MODULOS HOSPITALARIOS"},//2
-                {tp:"SERVICIOS AUXILIARES"},//3
-                {tp:"AUTO CONSENTIDO"},//4
-                {tp:"AUTO CON CHOFER"},//5
-                {tp:"TALLERES"},//6
-                {tp:"CRISTALERAS"},//7
-                {tp:"AGENTES"},//8
-                {tp:"VIAS"},//9
-                {tp:"TIENDAS AXA"}//10
-            ];
-                                    
-            $scope.prestadoresArgs ={
-                estado:'',
-                delegacionMunicipio:'',
-                nombreComun:'',
-                especialidad:'',
-                tipoPrestador:'',
-                rfc:''
-            };
-            
-            $scope.argsPrestadores = {
-                esAgentes:false,
-                prestadoresArgs:{}
-            };
+            $scope.lTP = [{tp:"HOSPITALES"},{tp:"MEDICOS"},{tp:"MODULOS HOSPITALARIOS"},{tp:"SERVICIOS AUXILIARES"},{tp:"AUTO CONSENTIDO"},{tp:"AUTO CON CHOFER"},{tp:"TALLERES"},{tp:"CRISTALERAS"},{tp:"AGENTES"},{tp:"VIAS"},{tp:"TIENDAS AXA"}];                                    
+            $scope.prestadoresArgs ={estado:'',delegacionMunicipio:'',nombreComun:'',especialidad:'',tipoPrestador:'',rfc:''};            
+            $scope.argsPrestadores = {esAgentes:false,prestadoresArgs:{}};
 		   
             $scope.selectedTipoPrestador = [];                                             
+            $scope.templates = [{url: '/view_A.html'},{url: '/view_B.html'},{url: '/view_C.html'},{url: '/view_D.html'},{url: '/view_E.html'},{url: '/view_F.html'},{url: '/view_G.html'},{url: '/view_BB.html'},{url: '/view_H.html'},{url: '/view_I.html'},{url: '/view_J.html'}]; 
         
-        $scope.templates = [
-            {url: '/view_A.html'},
-            {url: '/view_B.html'},
-            {url: '/view_C.html'},
-            {url: '/view_D.html'},
-            {url: '/view_E.html'},
-            {url: '/view_F.html'},
-            {url: '/view_G.html'},
-            {url: '/view_BB.html'},
-            {url: '/view_H.html'},
-            {url: '/view_I.html'},
-            {url: '/view_J.html'}
-        ]; 
-        
-        $scope.listaTipoPrestadores = [];
-        $scope.getTipoPrestadores = function(){
+            $scope.listaTipoPrestadores = [];
+            
+            $scope.getTipoPrestadores = function(){
             $scope.args = {};    
             $scope.args.cveCatalogo=$scope.catalogos[4].name; 
             try{
@@ -2784,7 +2736,7 @@ height: 330px;
             }catch(e){
                 console.log("Error al consultar tipos de prestador"); 
             }  
-        };
+            };
         //Consultar los tipos de prestador al cargar la pagina
         $scope.getTipoPrestadores();        
         //Por default al iniciar se carga el template de nuevo prestador para auto consentido
@@ -2810,26 +2762,12 @@ height: 330px;
                 console.log("seteando una especialidad["+val);
                 $scope.listaEspecialidades.push({value:val,label:""});
             }
-        };                                            
-        $scope.mostrarEditar = function(){
-                $('#element_to_pop_up').bPopup({
-                            modalClose: false,
-                            opacity: 0.3,
-                            positionStyle: 'fixed'
-                });            
-        };
+        };                                
         
-        $scope.mostrarLoading = function(){
-                $('#loading_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});             
-        };
-        
-        $scope.mostrarSucces = function (){
-            $('#success_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});           
-        };
-        
-        $scope.mostrarError = function (){
-            $('#error_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});           
-        };        
+        $scope.mostrarEditar = function(){$('#element_to_pop_up').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});};        
+        $scope.mostrarLoading = function(){$('#loading_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});};        
+        $scope.mostrarSucces = function (){$('#success_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});};        
+        $scope.mostrarError = function (){$('#error_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});};        
 
         $scope.onloadController = function() {   
             
@@ -2987,9 +2925,10 @@ $scope.savePrestador = function(){
             data:  $scope.args,
             url :  $scope.rutas[2].url
         }).success(function(data){   
-            bPopup.close();
+            bPopup.close();            
             if(data.estatus.success){                
-                $scope.mostrarSucces();
+                $scope.mostrarSucces();                
+                $scope.nuevoPForm.$setPristine();
             }else{
                 $scope.mostrarError();
             }                        
@@ -3045,75 +2984,29 @@ $scope.getListaPrestadores = function (){
     }	  
 };
 
-
-
-
-$scope.load = function (indA,indB){
-    $scope.getTiposdeServicio(indA);//indA:id del tipo de prestador para traer los tipos de servicio relacionado a un tipo de prestador
-    $scope.getPais();
-    $scope.getEspecialidades(indB); //indB:id del ramo para traer las especialidades realacionados al ramo   
+$scope.seColumns = function(){
+    $scope.display = [{dis:false},{dis:false},{dis:false}];
 };
 
-
-
+$scope.load = function (indA,indB){
+            $scope.getTiposdeServicio(indA);//indA:id del tipo de prestador para traer los tipos de servicio relacionado a un tipo de prestador
+            $scope.getPais();
+            $scope.getEspecialidades(indB); //indB:id del ramo para traer las especialidades realacionados al ramo   
+};
 $('#yui_css1').click(function (){$scope.setTipoPrestador(4); $('#opc_1').siblings('li').removeClass('active'); $('#opc_1').addClass("active"); });    
 $('#yui_css2').click(function (){$scope.setTipoPrestador(0); $('#opc_2').siblings('li').removeClass('active'); $('#opc_2').addClass("active"); });
 $('#yui_css3').click(function (){$scope.setTipoPrestador(10);$('#opc_3').siblings('li').removeClass('active'); $('#opc_3').addClass("active"); });
-$('#yui_css4').click(function (){$scope.setTipoPrestador(9);});           
-        
-        }]);  
-    
-
-    
+$('#yui_css4').click(function (){$scope.setTipoPrestador(9);});                   
+}]);  
 //Seccion de script utilados para alloyui    
-YUI().use(
-  'aui-toggler',
-  'aui-tabview',
-  'aui-form-validator',
+YUI().use('aui-toggler','aui-tabview','aui-form-validator',
   function(Y) {
-    new Y.TogglerDelegate(
-      {
-        animated: true,
-        closeAllOnExpand: true,
-        container: '#myToggler',
-        content: '.content',
-        expanded: false,
-        header: '.header',
-        transition: {
-          duration: 0.2,
-          easing: 'cubic-bezier(0, 0.1, 0, 1)'
-        }
-      }
-    );
-    new Y.TabView(
-      {
-        srcNode: '#myTab'
-      }
-    ).render();   
-    new Y.FormValidator(
-      {
-        boundingBox: '#editarForm'
-      }
-    );
-
-    
-  }
-);
+    new Y.TogglerDelegate({animated: true,closeAllOnExpand: true,container: '#myToggler',content: '.content',expanded: false,header: '.header',transition: {duration: 0.2,easing: 'cubic-bezier(0, 0.1, 0, 1)'}});
+    new Y.TabView({srcNode: '#myTab'}).render();   
+    new Y.FormValidator({boundingBox: '#editarForm'});
+  });
 
 //Seccion de script de jquery para los eventos provocados en el front por el usuario
-
-    $(document).ready(function(){
-        
-    $("ul li").click(function(){
-            $(this).siblings('li').removeClass('active');       
-            $(this).addClass("active");
-        });            
-    });
-
-    $('.linkeditar').bind('click', function(e) {
-                // Prevents the default action to be triggered. 
-                e.preventDefault();
-                // Triggering bPopup when click event is fired
-    });
-    
+    $(document).ready(function(){$("ul li").click(function(){$(this).siblings('li').removeClass('active');$(this).addClass("active");});});
+    $('.linkeditar').bind('click', function(e) {e.preventDefault();});    
 </script>
