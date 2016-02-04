@@ -11,6 +11,9 @@
     padding-left: 10px;
 }
 
+#nuevoPForm{
+    margin-right: 15px;
+}
 #element_to_pop_up{ 
     background-color:#fff;
     border-radius:15px;
@@ -73,14 +76,10 @@
     font-weight: normal;    
 }
 .b_contenedor_modal{
-overflow: scroll;
-height: 320px;
+overflow: auto;
+height: 410px;
 }
-.b_footer_modal{
-    right: 20px;
-    bottom: 15px;
-    position: absolute;
-}
+
       #divTitulo{
         width:100%;
         padding-left: 50px;
@@ -163,8 +162,8 @@ height: 320px;
         </ul>  
     
         <br>
-        <button class="btn btn-primary"  ng-click="mostrarBuscador = 'false'; currentTp = currentTpl; "> Nuevo Prestador </button>  	
-        <button class="btn btn-primary"  ng-click="currentTp = '';mostrarBuscador = 'true';getListaEstado();seColumns()"> Buscar Prestador </button>
+        <button class="btn btn-primary"  ng-click="mostrarBuscador = 'false';currentTp = currentTpl;restart()"> Nuevo Prestador </button>  	
+        <button class="btn btn-primary"  ng-click="mostrarBuscador = 'true';currentTpe = currentTpl;getListaEstado();seColumns();currentTp = ''"> Buscar Prestador </button>
         <br>                 
         
     </div>
@@ -273,9 +272,9 @@ height: 320px;
                 <td data-title="'Gama'" ng-show="display[2].dis" ng-bind="row.gama" ></td>
                 <td data-title="'Horario'" >Hora 1: {{row.horarioAtencion1 || ''}} <br> Hora 2:{{row.horarioAtencion2 ||'' }} </td>
                 <td data-title="'Email'" > <div ng-repeat="mail in row.emails">{{'Email '+ ($index+1)+': '+mail.email || '' }}<br></div>  </td>
-                <td data-title="'Teléfono'" ><div ng-repeat="tel in row.direccion[0].telefonos">  {{($index+1)+': '+tel.numero || '' }}<br> </div></td>
+                <td data-title="'Teléfono'" ><div ng-repeat="tel in row.direccion[0].telefonos">  {{'Tel '+($index+1)+': '+tel.numero || '' }} - {{ tel.tipoTelefono || '' }}<br> </div></td>
                 <td data-title="'Direccion'" ng-bind="+row.direccion[0].estado +','+row.direccion[0].municipio+', CP:'+row.direccion[0].codigoPostal +', Colonia: '+row.direccion[0].colonia +', Calle:'+row.direccion[0].calle +', Num Ext. '+row.direccion[0].numeroExterior" ></td>
-                <td data-title="'Editar'" class="td_60" >  <a ng-click="mostrarEditar()" class="linkeditar">Editar</a> </td>
+                <td data-title="'Editar'" class="td_60" >  <a ng-click="mostrarEditar(row)" class="linkeditar">Editar</a> </td>
             </tr>
             </table>        
         </div>
@@ -285,218 +284,26 @@ height: 320px;
 
 <!--      modal para mostrar las datos de edicion-->
 <div id="element_to_pop_up">
-            <a class="b-close">X</a>
-            <p class="b_titulo">Modificar Prestador</p>
-            <hr>
-            <div class="b_contenedor_modal">
-		<form id="editarForm" name="editarForm">
-		<div id="myToggler">
-  		<h4 class="header toggler-header-collapsed acordiontitulo">Datos Generales Prestador</h4>
-  		<div class="content toggler-content-collapsed">
-    		<div class="datgeneralPrestador">
-    			<div>
-        		<div class="form-group">   
-                            <label class="control-label"> Tipo de Servicio:* </label>
-                            <select >
-                		            <option>Seleccione</option>
-                            </select>
-        		</div>
-        		
-        		<div class="form-group">
-                                <label class="control-label"> Nombre común:* </label>
-                                <input  id="nomcomun" name="nomcomun" type="text" ng-model="nombre" ng-required="true"/>
-                                <div ng-show="editarForm.nomcomun.$dirty && editarForm.nomcomun.$invalid" class="camporequerido" ng-bind="camposrequeridos">                		           
-                                </div>
-                        </div>
-        		
-        		<div class="form-group">
-                                <label class="control-label">Razón social:</label>
-                                <input type="text" />
-        		</div>
-        		
-        		<div class="form-group">
-                                <label class="control-label"> RFC: </label>
-                                <input type="text" />
-        		</div>
-        		</div>    
-    			
-    			<div>
-        		<div class="form-group">
-                            <label class="control-label"> Red de preferencia: *</label>
-                            <select>
-                		            <option>SI</option>
-                		            <option>NO</option>
-                            </select>
-        		</div>
-        		<div class="form-group">
-                            <label class="control-label"> Plan: *</label>
-                            <input id="plan" name="plan"  ng-model="plan" ng-required="true" type="text" />
-                            <div ng-show="editarForm.plan.$dirty && editarForm.plan.$invalid" class="camporequerido" ng-bind="camposrequeridos">                		            
-                            </div>                             
-        		</div>
-        		<div class="form-group">
-                            <label class="control-label"> Gama: *</label>
-                            <input id="gama" name="gama" ng-model="gama" ng-required="true" type="text" />
-                            <div ng-show="editarForm.gama.$dirty && editarForm.gama.$invalid" class="camporequerido" ng-bind="camposrequeridos">                		            
-                            </div>                              
-        		</div>   
-        		<div class="form-group">
-                            <label class="control-label"> Horario atención 1: *</label>
-                            <input id="h1" name="h1" ng-model="horarioatencion1" ng-required="true" type="text" />
-                            <div ng-show="editarForm.h1.$dirty && editarForm.h1.$invalid" class="camporequerido" ng-bind="camposrequeridos">                		            
-                            </div>                             
-        		</div>    
-    			</div>
-    			
-			<div>
-                            <div class="form-group">
-                                <label class="control-label"> Horario atención 2: </label>
-                                <input type="text" />
-                            </div>     
-    			</div>
-    </div>  
-  </div>
-
-
-  
-  <h4 class="header toggler-header-collapsed acordiontitulo">Dirección Prestador</h4>
-  <div class="content toggler-content-collapsed">
-    <div class="datgeneralPrestador">
-        <div>
-            <div class="form-group">
-                <label class="control-label">Pais: *</label>
-                <select >
-                        <option>Seleccione</option>
-                        <option></option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Estado: *</label>                
-                <select >
-                    <option>Seleccione</option>
-                    <option></option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Delegación o Municipio: * </label>                
-                <select >
-                    <option>Seleccione</option>
-                    <option></option>
-                </select>                            
-            </div>
-            <div class="form-group">            
-                <label class="control-label"> Codigo Postal: *</label>                
-                <input  id="cp" name="cp" ng-model="cp" ng-required="true" type="text"/> 
-                <div ng-show="editarForm.cp.$dirty && editarForm.cp.$invalid" class="camporequerido" ng-bind="camposrequeridos">                    
-                </div>
+            <a class="b-close">X</a>                        
+            <div class="b_contenedor_modal">		               
+                <div id="tpl-content" ng-include src="currentTpe" onload='onloadController()'></div>
             </div>            
-        </div>
-        
-        <div>
-            <div class="form-group">
-                <label class="control-label"> Colonia: * </label>                
-                <input  id="colonia" name="colonia" ng-model="colonia"  ng-required="true" type="text"/>
-                <div ng-show="editarForm.colonia.$dirty && editarForm.colonia.$invalid" class="camporequerido" ng-bind="camposrequeridos">                    
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label"> Calle: * </label>                
-                <input id="calle" name="calle" ng-model="calle" ng-required="true" type="text"/>     
-                <div ng-show="editarForm.calle.$dirty && editarForm.calle.$invalid" class="camporequerido" ng-bind="camposrequeridos">                    
-                </div>                
-            </div>
-            <div class="form-group">
-                <label class="control-label"> Numero exterior: * </label>
-                <input id="numexterior" name="numexterior"  ng-model="numexterior" ng-required="true" type="text"/>  
-                <div ng-show="editarForm.numexterior.$dirty && editarForm.numexterior.$invalid" class="camporequerido" ng-bind="camposrequeridos">                    
-                </div>                 
-            </div>  
-            <div class="form-group">
-                <label class="control-label"> Numero interior: </label>                
-                <input  type="text"/>
-            </div>            
-        </div>
-
-        <div>
-            <div class="form-group">
-                <label class="control-label">Latitud: *</label>                
-                <input id="lat" name="lat" ng-model="latitud" ng-required="true" type="text"/>  
-                <div ng-show="editarForm.lat.$dirty && editarForm.lat.$invalid" class="camporequerido" ng-bind="camposrequeridos">                    
-                </div>                
-            </div>
-            <div class="form-group">
-                <label class="control-label">Longitud: *</label>                
-                <input id="long" name="long" ng-model="long" ng-required="true" type="text"/>     
-                <div ng-show="editarForm.long.$dirty && editarForm.long.$invalid" class="camporequerido" ng-bind="camposrequeridos">                    
-                </div>                 
-            </div>
-        </div>     
-    </div>
-  </div>
-  
-  <h4 class="header toggler-header-collapsed acordiontitulo">Teléfono Prestador </h4>
-  <div class="content toggler-content-collapsed">
-  <div class="datgeneralPrestador">
-    <div>
-        <div class="form-group"> 
-         <label class="control-label">Teléfono 1: *</label>
-         <input id="tel1" name="tel1" ng-required="true" ng-model="tel1" type="text" />
-            <div ng-show="editarForm.tel1.$dirty && editarForm.tel1.$invalid" class="camporequerido" ng-bind="camposrequeridos">                    
-            </div>           
-        </div>
-        <div class="form-group"> 
-         <label class="control-label">Teléfono 2: </label>
-         <input type="text" />
-        </div>   
-        <div class="form-group"> 
-         <label class="control-label">Celular: </label>
-         <input type="text" />
-        </div>        
-    </div>
-  </div>
-  </div>
-  
-    <h4 class="header toggler-header-collapsed acordiontitulo">Mail Prestador</h4>
-    <div class="content toggler-content-collapsed">
-    <div class="datgeneralPrestador">
-        <div>
-            <div class="form-group">
-                <label class="control-label">Correo electrónico 1: *</label>
-                <input  id="mail1" name="mail1" ng-required="true" ng-model="mail1"  type="text"/>
-                <div ng-show="editarForm.mail1.$dirty && editarForm.mail1.$invalid" class="camporequerido" ng-bind="camposrequeridos">                    
-                </div>                 
-            </div>
-            <div class="form-group">
-                <label class="control-label">Correo electrónico 2:</label>
-                <input  type="text"/>
-            </div>            
-        </div>
-    </div>
-    </div>
-    
-</div>    
-    
-</form>                
-                </div>
-                <div class="b_footer_modal">
-                    <button class="btn" type="submit">Guardar</button>
-                </div>
 </div> 
 
 
 <div id="loading_">
-    <img src="/documents/45516/49001/Esfera-Loading-62156.gif">
+    <img src="/documents/45516/49001/Esfera-Loading-62156.gif" alt="">
 </div>
 <div id="success_">
     <a class="b-close">X</a>    
     Información guardado correctamente <br><br>
-    <img src="/documents/45516/48801/succes.png">    
+    <img src="/documents/45516/48801/succes.png" alt="">    
 </div>
 
 <div id="error_">
     <a class="b-close">X</a>
     Ha ocurrido un error <br> <br>
-    <img src="/documents/45516/48801/error.png">
+    <img src="/documents/45516/48801/error.png" alt="">
 </div>
 <!--Termina el tag con id myTab-->
 </div>
@@ -504,8 +311,8 @@ height: 320px;
 <!--Auto consentido-->    
 <script type="text/ng-template" id="/view_A.html"> 
 <br>
-<label class="tituloPres">AUTO <img src="/documents/45516/48801/right164.png" /> Auto Consentido <img src="/documents/45516/48801/right164.png" /> Nuevo Prestador</label>
-<hr>
+<label class="tituloPres">AUTO <img src="/documents/45516/48801/right164.png" /> Auto Consentido <img src="/documents/45516/48801/right164.png" /> {{operacion}}</label>
+<br>
 <form ng-init="getTiposdeServicio(4);getPais();" id="nuevoPForm" name="nuevoPForm">
 <div id="nuevoToggler">
   <h4 class="header toggler-header-collapsed acordiontitulo">Datos Generales Prestador</h4>
@@ -676,7 +483,7 @@ height: 320px;
     </div>
 </div>    
  
-<div  style="padding-left: 80%;">
+<div  style="padding-left: 90%;">
         <input class="btn btn-primary" type="submit" data-ng-disabled='!nuevoPForm.$valid' ng-click="savePrestador()" value="Guardar" />
 </div>    
 </form>    
@@ -2658,9 +2465,9 @@ height: 320px;
 			"idMunicipio" :"",
 			"municipio" :"",
 			"descripcion" :"",
-			"latitud" :"",
-			"longitud" :"",
-			"codigoPostal" :"",
+			"latitud" :0,
+			"longitud" :0,
+			"codigoPostal" :0,
 			"numeroInterior" :"",
 			"numeroExterior" :"",
 			"colonia" :"",
@@ -2686,32 +2493,38 @@ height: 320px;
         app.controller('prestadorespanelAXACtrl',['$scope','$http','$filter','$q','ngTableParams','prestadorModel',
         function ($scope,$http, $filter, $q, ngTableParams,prestadorModel) {
             
-            $scope.camposrequeridos = "¡Requerido!";            
+            $scope.camposrequeridos = '¡Requerido!';                 
             //objeto para almacenar la informacion del prestador(prestadorVo)            
-            $scope.records = false;
-            
-            $scope.prestador = prestadorModel.getPrestador();            
-            $scope.prestadorDireccion = prestadorModel.getDireccion();             
-            $scope.prestadorTelefono = prestadorModel.getTelefono();            
-            $scope.prestadorEmail = prestadorModel.getEmails();
+            $scope.restart = function(){
+                $scope.operacion = 'Nuevo Prestador'
+                $scope.records = false;
+                $scope.editar = false;
+                $scope.prestador = prestadorModel.getPrestador();            
+                $scope.prestadorDireccion = prestadorModel.getDireccion();             
+                $scope.prestadorTelefono = prestadorModel.getTelefono();            
+                $scope.prestadorEmail = prestadorModel.getEmails();
+                $scope.listaDelegaciones = [];
+                $scope.listaDeEstados = [];
+            };            
+            $scope.restart();
             
             $scope.args = {};            
             $scope.listaRedPref = [{label:'SI',value:'SI'},{label:'NO',value:'NO'}];
             //Claves para la consulta de catalogos
-            $scope.especialidades = [{rows:""}];            
-            $scope.catalogos = [{name:"CATPAIS"},{name:"CATESTADO"},{name:"CATMUNICIPIO"},{name:"CATTIPOESPECIALIDAD"},{name:"CATIPOPRESTADOR"},{name:"CATTIPOSERVICIO"},{name:"CATRAMO"}];
-            $scope.listaRamos =[{ramo:"AUTOS"},{ramo:"SALUD"},{ramo:"AGENTE"},{ramo:"VIA"}];            
-            $scope.metodo = [{type:"POST"},{type:"GET"}];
+            $scope.especialidades = [{rows:''}];            
+            $scope.catalogos = [{name:'CATPAIS'},{name:'CATESTADO'},{name:'CATMUNICIPIO'},{name:'CATTIPOESPECIALIDAD'},{name:'CATIPOPRESTADOR'},{name:'CATTIPOSERVICIO'},{name:'CATRAMO'}];
+            $scope.listaRamos =[{ramo:'AUTOS'},{ramo:'SALUD'},{ramo:'AGENTE'},{ramo:'VIA'}];            
+            $scope.metodo = [{type:'POST'},{type:'GET'}];
             $scope.display = [{dis:false},{dis:false},{dis:false}];
             //url para las peticiones
             $scope.rutas = [
-                {url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getCatalogosRequest"},
-                {url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getPrestadoresServicio"},
-                {url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/saveOrUpdatePrestadores"},
-                {url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getRamosRequest"}
+                {url:'http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getCatalogosRequest'},
+                {url:'http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getPrestadoresServicio'},
+                {url:'http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/saveOrUpdatePrestadores'},
+                {url:'http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getRamosRequest'}
             ];            
             //Lista tipo de prestador
-            $scope.lTP = [{tp:"HOSPITALES"},{tp:"MEDICOS"},{tp:"MODULOS HOSPITALARIOS"},{tp:"SERVICIOS AUXILIARES"},{tp:"AUTO CONSENTIDO"},{tp:"AUTO CON CHOFER"},{tp:"TALLERES"},{tp:"CRISTALERAS"},{tp:"AGENTES"},{tp:"VIAS"},{tp:"TIENDAS AXA"}];                                    
+            $scope.lTP = [{tp:'HOSPITALES'},{tp:'MEDICOS'},{tp:'MODULOS HOSPITALARIOS'},{tp:'SERVICIOS AUXILIARES'},{tp:'AUTO CONSENTIDO'},{tp:'AUTO CON CHOFER'},{tp:'TALLERES'},{tp:'CRISTALERAS'},{tp:'AGENTES'},{tp:'VIAS'},{tp:'TIENDAS AXA'}];                                    
             $scope.prestadoresArgs ={estado:'',delegacionMunicipio:'',nombreComun:'',especialidad:'',tipoPrestador:'',rfc:''};            
             $scope.argsPrestadores = {esAgentes:false,prestadoresArgs:{}};
 		   
@@ -2731,10 +2544,10 @@ height: 320px;
                 }).success(function(data){
                     $scope.listaTipoPrestadores = data.listaCatalogos;
                     $scope.setTipoPrestador(4);
-                    console.log("obteniendo lista de tipos de prestador");
+                    console.log('obteniendo lista de tipos de prestador');
                 });
             }catch(e){
-                console.log("Error al consultar tipos de prestador"); 
+                console.log('Error al consultar tipos de prestador'); 
             }  
             };
         //Consultar los tipos de prestador al cargar la pagina
@@ -2745,60 +2558,46 @@ height: 320px;
         $scope.setTipoPrestador = function (cvTipPrestador){
             //Cuando se abre la pagina de administración se muestra por default el ramo AUTOS con el tipo de prestador 
             //como auto consentido 
-            if(cvTipPrestador !== ""){
+            if(cvTipPrestador !== ''){
                 var $tipoPredorId = $filter('filter')($scope.listaTipoPrestadores,{label : $scope.lTP[cvTipPrestador].tp},true);
                 $scope.prestador.idTipoPrestador = $tipoPredorId[0].value;
-                console.log("cve: "+$tipoPredorId[0].value+" label: "+$tipoPredorId[0].label);
+                console.log('cve: '+$tipoPredorId[0].value+' label: '+$tipoPredorId[0].label);
             }
         };
         
         $scope.setEspecialidad = function (ind){
             console.log(ind);
-            $scope.especialidades.push({rows:""});   
+            $scope.especialidades.push({rows:''});   
         };
         $scope.listaEspecialidades = [];
         $scope.setEspecialidades = function(val){
-            if(val !=="" && val !==" "){     
-                console.log("seteando una especialidad["+val);
-                $scope.listaEspecialidades.push({value:val,label:""});
+            if(val !=='' && val !==' '){     
+                console.log('seteando una especialidad['+val);
+                $scope.listaEspecialidades.push({value:val,label:''});
             }
-        };                                
-        
-        $scope.mostrarEditar = function(){$('#element_to_pop_up').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});};        
+        };                                                                                
         $scope.mostrarLoading = function(){$('#loading_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});};        
         $scope.mostrarSucces = function (){$('#success_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});};        
         $scope.mostrarError = function (){$('#error_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});};        
 
-        $scope.onloadController = function() {   
-            
-            YUI().use( 'aui-form-validator', function(Y) { new Y.FormValidator({boundingBox: '#nuevoPForm' } ); });
-            YUI().use(
-                    'aui-toggler',
-                    function(Y) {
-                    new Y.TogglerDelegate(
-                    {
+        $scope.onloadController = function() {               
+            YUI().use('aui-form-validator', function(Y){new Y.FormValidator({boundingBox:'#nuevoPForm'});});
+            YUI().use('aui-toggler',function(Y) {
+                    new Y.TogglerDelegate({
                         animated: true,
                         closeAllOnExpand: false,
                         container: '#nuevoToggler',
                         content: '.content',
                         expanded: false,
                         header: '.header',
-                        transition: {
-                            duration: 0.2,
-                            easing: 'cubic-bezier(0, 0.1, 0, 1)'
-                        }
-                    }
-                    );
-                    }
-                );
-                $scope.especialidades = [{rows:""}];
+                        transition: {duration: 0.2,easing: 'cubic-bezier(0, 0.1, 0, 1)'}
+                    });});                
+                $scope.especialidades = [{rows:''}];
                 $scope.listaEspecialidades = [];
                 $scope.listaRamosAgentes =[];
             };
 
-
-
-$scope.getEspecialidades = function(pos){         
+    $scope.getEspecialidades = function(pos){         
         $scope.args = {};
         $scope.args.catalogoDominio = $scope.listaRamos[pos].ramo;
         $scope.args.cveCatalogo=$scope.catalogos[3].name;  
@@ -2809,16 +2608,16 @@ $scope.getEspecialidades = function(pos){
                 url :  $scope.rutas[0].url
             }).success(function(data){
                 $scope.listaDeEspecialidad = data.listaCatalogos;
-                console.log("obteniendo lista de ramos");
+                console.log('obteniendo lista de ramos');
             });        
         }catch(e){
-            console.log("Error en la petición de ramos");
+            console.log('Error en la petición de ramos');
         }           
-};
+    };
 
 //recibe el index para el tipo de prestador buscado (estos valores ya son estaticos)
 $scope.getTiposdeServicio = function(pos){
-    if(pos !== "" || pos !== " "){        
+    if(pos !== '' || pos !== ' '){        
         $scope.args = {};
         $scope.args.catalogoDominio = $scope.lTP[pos].tp;
         $scope.args.cveCatalogo=$scope.catalogos[5].name;  
@@ -2829,10 +2628,10 @@ $scope.getTiposdeServicio = function(pos){
                 url :  $scope.rutas[0].url
             }).success(function(data){
                 $scope.listaTipoServicio = data.listaCatalogos;
-                console.log("obteniendo lista de tipos de servicio");
+                console.log('obteniendo lista de tipos de servicio');
             });        
         }catch(e){
-            console.log("Error en la petición de tipos de servicio");
+            console.log('Error en la petición de tipos de servicio');
         }   
     }
 };
@@ -2847,32 +2646,39 @@ $scope.getPais = function(){
             url :  $scope.rutas[0].url
         }).success(function(data){
             $scope.Listapais = data.listaCatalogos;
-            console.log("obteniendo lista de pais");
+            console.log('obteniendo lista de pais');
         });        
     }catch(e){
-        console.log("Error en la petición de lista de pais");
+        console.log('Error en la petición de lista de pais');
     }
 };
 
 $scope.getListaEstado = function (){
     $scope.args = {};
     $scope.args.cveCatalogo=$scope.catalogos[1].name; 
+    
     try{
-    $http({
-        method :$scope.metodo[0].type,
-        data:   $scope.args,
-        url :   $scope.rutas[0].url
-    }).success(function(data){
-        $scope.listaDeEstados = data.listaCatalogos;
-        console.log("obteniendo datos de estados");
-    });        
+        $http({
+            method :$scope.metodo[0].type,
+            data:   $scope.args,
+            url :   $scope.rutas[0].url
+        }).success(function(data){            
+            if(data.estatus.success){
+                $scope.listaDeEstados = data.listaCatalogos;
+                if($scope.editar){
+                    var $estado = $filter('filter')($scope.listaDeEstados,{value: $scope.prestadorDireccion[0].idEstado},true);
+                    $scope.selectedEstados = $estado[0];
+                }
+            }                                              
+            console.log('obteniendo datos de estados');            
+        });        
     }catch(e){
-        console.log("Error al consultar estados");
+        console.log('Error al consultar estados');
     }    
 };
 
 $scope.getListaDelegacion = function(idestado){
-    if(idestado !== "" || idestado !== " "){
+    if(idestado !== '' || idestado !== ' '){
         $scope.args = {};
         $scope.args.catalogoDominio = idestado;
         $scope.args.cveCatalogo=$scope.catalogos[2].name; 
@@ -2881,12 +2687,19 @@ $scope.getListaDelegacion = function(idestado){
             method :$scope.metodo[0].type,
             data: $scope.args,
             url :$scope.rutas[0].url
-        }).success(function(data){
-            $scope.listaDelegaciones = data.listaCatalogos;
-            console.log("obteniendo datos de delegacion");
+        }).success(function(data){            
+            if(data.estatus.success){
+                $scope.listaDelegaciones = data.listaCatalogos;
+                if($scope.editar){
+                    var $delegacion = $filter('filter')($scope.listaDelegaciones,{value: $scope.prestadorDireccion[0].idMunicipio},true);
+                    $scope.modelEstado = $delegacion[0];
+                }
+            }
+            
+            console.log('obteniendo datos de delegacion');
         }); 
         }catch(e){
-            console.log("Error al consultar delegaciones");
+            console.log('Error al consultar delegaciones');
         }
     }
 };
@@ -2901,10 +2714,10 @@ $scope.getRamos = function(){
                 url :$scope.rutas[3].url
             }).success(function(data){
                 $scope.listaRamosAgentes = data.listaRamos;
-                console.log("obteniendo datos de ramos");
+                console.log('obteniendo datos de ramos');
             }); 
         }catch(e){
-            console.log("Error al consultar ramos");
+            console.log('Error al consultar ramos');
         }        
 };
 
@@ -2915,7 +2728,7 @@ $scope.savePrestador = function(){
         $scope.prestador.emails = $scope.prestadorEmail; 
         $scope.prestador.especialidad = $scope.listaEspecialidades;
         $scope.prestador.agenteRamos = $scope.listaRamosAgentes;
-        $scope.args = {"upsertPrestador":$scope.prestador};
+        $scope.args = {upsertPrestador: $scope.prestador};
         
         console.log($scope.args);
         var bPopup = $('#loading_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});
@@ -2935,7 +2748,7 @@ $scope.savePrestador = function(){
             console.log(data);            
         });        
     }catch(e){
-        console.log("Error al guardar informacion");
+        console.log('Error al guardar informacion');
     }
 };
 
@@ -2958,7 +2771,7 @@ $scope.getListaPrestadores = function (){
     $scope.prestadoresArgs.rfc = $scope.rfc;
     $scope.argsPrestadores.esAgentes = false;
     $scope.argsPrestadores.prestadoresArgs = $scope.prestadoresArgs;
-    console.log("cveTipoPrestador:" + $scope.prestadoresArgs.tipoPrestador + "cveEstado:" +$scope.prestadoresArgs.estado+ "rfc:" + $scope.rfc);
+    console.log('cveTipoPrestador:' + $scope.prestadoresArgs.tipoPrestador + 'cveEstado:' +$scope.prestadoresArgs.estado+ 'rfc:' + $scope.rfc);
     try{
         var cargando = $('#loading_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});
         $http({
@@ -2977,10 +2790,10 @@ $scope.getListaPrestadores = function (){
             }            
             cargando.close();                          
             //$scope.tableParams = new ngTableParams({},{dataset: $scope.listaPrestadores});            
-            console.log("datos a tablas insertados" );
+            console.log('datos a tablas insertados' );
         });	        
     }catch(e){
-        console.log("error en get prestadores...");
+        console.log('error en get prestadores');
     }	  
 };
 
@@ -2993,20 +2806,44 @@ $scope.load = function (indA,indB){
             $scope.getPais();
             $scope.getEspecialidades(indB); //indB:id del ramo para traer las especialidades realacionados al ramo   
 };
-$('#yui_css1').click(function (){$scope.setTipoPrestador(4); $('#opc_1').siblings('li').removeClass('active'); $('#opc_1').addClass("active"); });    
-$('#yui_css2').click(function (){$scope.setTipoPrestador(0); $('#opc_2').siblings('li').removeClass('active'); $('#opc_2').addClass("active"); });
-$('#yui_css3').click(function (){$scope.setTipoPrestador(10);$('#opc_3').siblings('li').removeClass('active'); $('#opc_3').addClass("active"); });
+
+
+$scope.mostrarEditar = function(p){
+            
+            $scope.operacion = 'Editar Prestador';
+            $scope.editar = true;            
+            console.log(p);
+            $scope.prestador = p; 
+            $scope.prestadorDireccion = p.direccion;
+            $scope.prestadorTelefono = p.direccion[0].telefonos;
+            $scope.prestadorEmail = p.emails;
+            console.log($scope.prestador);
+            var $tipoServicio = $filter('filter')($scope.listaTipoServicio,{value: p.idTipoServicio},true); 
+            $scope.modelTipoServicio = $tipoServicio[0]; 
+            var $pais = $filter('filter')($scope.Listapais,{label: p.direccion[0].pais},true); 
+            $scope.modelPais = $pais[0]; 
+            $scope.getListaEstado();
+            var $idEstado = $scope.prestadorDireccion[0].idEstado;
+            console.log('ID_ESTADO'+$idEstado);
+            var $lat = p.direccion[0].latitud;
+            var $lon = p.direccion[0].longitud;
+            var $cp = p.direccion[0].codigoPostal;
+            $scope.prestadorDireccion[0].latitud = parseFloat($lat);
+            $scope.prestadorDireccion[0].longitud = parseFloat($lon);
+            $scope.prestadorDireccion[0].codigoPostal = parseFloat($cp);
+            $scope.getListaDelegacion($idEstado);
+            
+            $('#element_to_pop_up').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});
+}; 
+
+$('#yui_css1').click(function (){$scope.setTipoPrestador(4); $('#opc_1').siblings('li').removeClass('active'); $('#opc_1').addClass('active'); });    
+$('#yui_css2').click(function (){$scope.setTipoPrestador(0); $('#opc_2').siblings('li').removeClass('active'); $('#opc_2').addClass('active'); });
+$('#yui_css3').click(function (){$scope.setTipoPrestador(10);$('#opc_3').siblings('li').removeClass('active'); $('#opc_3').addClass('active'); });
 $('#yui_css4').click(function (){$scope.setTipoPrestador(9);});                   
 }]);  
 //Seccion de script utilados para alloyui    
-YUI().use('aui-toggler','aui-tabview','aui-form-validator',
-  function(Y) {
-    new Y.TogglerDelegate({animated: true,closeAllOnExpand: true,container: '#myToggler',content: '.content',expanded: false,header: '.header',transition: {duration: 0.2,easing: 'cubic-bezier(0, 0.1, 0, 1)'}});
-    new Y.TabView({srcNode: '#myTab'}).render();   
-    new Y.FormValidator({boundingBox: '#editarForm'});
-  });
-
+YUI().use('aui-toggler','aui-tabview','aui-form-validator',function(Y){new Y.TabView({srcNode: '#myTab'}).render();});
 //Seccion de script de jquery para los eventos provocados en el front por el usuario
-    $(document).ready(function(){$("ul li").click(function(){$(this).siblings('li').removeClass('active');$(this).addClass("active");});});
-    $('.linkeditar').bind('click', function(e) {e.preventDefault();});    
+$(document).ready(function(){$('ul li').click(function(){$(this).siblings('li').removeClass('active');$(this).addClass('active');});});
+$('.linkeditar').bind('click', function(e) {e.preventDefault();});    
 </script>
