@@ -10,8 +10,9 @@
     display: none;
     padding: 20px;
     width: 400px;
-    height: 150px;    
-    font-size:19px;
+    height: 150px;
+    font: 16px/16px roboto-regular, arial, sans-serif;
+    font-size:large;
     text-align: center;     
 }
 
@@ -24,7 +25,10 @@
 }
 </style>
 <div ng-app="web_App" ng-controller="prestadoresAXACtrl">
-    
+<div class="axamx-prestadores-header">
+		<h3>Estás buscando {{buscandoPor}}</h3>
+		<i class="fa fa-times fa-lg"  ></i>
+	</div>   
 <div class="map-wrapper">
 		<div class="map-search">
 			<div class="container">
@@ -40,26 +44,29 @@
 					</button>
 				</span>
 				<form  class="default-form search-bar">
-					<span class="company_name">
-                                            <input  ng-model="prestadoresArgs.nombreComun"  type="text" 
-                                                    placeholder="Nombre Común"
-                                                    typeahead-on-select="prestadoresArgs.nombreComun =  $item.nombre"
-                                                    typeahead="opt.nombre for opt in listaPrestadores | filter:$viewValue | limitTo:10"
-                                                    >
-					</span>
 					<span class="location select-box select-style">
                                             <select name="Select_Location" data-placeholder="Selecciona un Estado"  ng-model="selectedEstado" 
                                                     ng-options="opt as opt.label for opt in listaDeEstados" ng-change="prestadoresArgs.estado=selectedEstado.value;getListaDelegacion(selectedEstado.value)" >
-                                                    <option value="">Selecciona un Estado</option>
+                                                    <option value="">Estado</option>
                                             </select>
 					</span>
 
 					<span class="category  select-box select-style">
                                             <select name="Select_Category" data-placeholder="Selecciona un Municipio" ng-model="selectedMunicipio" 
                                                     ng-options="opt as opt.label for opt in listaDelegaciones" ng-change="prestadoresArgs.delegacionMunicipio = selectedMunicipio.value" >
-                                                    <option value="">Selecciona un Municipio</option>
+                                                    <option value="">Municipio</option>
                                             </select>
 					</span>
+                    <span class="company_name nombre-comun">
+                                            <input  ng-model="prestadoresArgs.nombreComun"  type="text" 
+                                                    placeholder="Nombre Común"
+                                                    typeahead-on-select="prestadoresArgs.nombreComun =  $item.nombre"
+                                                    typeahead="opt.nombre for opt in listaPrestadores | filter:$viewValue | limitTo:10"
+                                                    >
+                    </span>
+                    <span class="company_name especialidad">
+                        <input type="text" placeholder="Especialidad">
+                    </span>
 					<span class="submit-btn">
                                             <button class="btn btn-secondary full-width" ng-click="getPrestadores()" ><i class="fa fa-search"></i>Buscar</button>                                            
 					</span>
@@ -73,16 +80,16 @@
 							<img src="/documents/45516/49521/icon_quick-links_medicos.png/acff8821-7697-4313-9ab8-f37c2ce5a4cb?t=1453767667000">
 							<h5>Servicios de Salud</h5>
 							<ul class="axa-subservicios">
-								<li ng-click="setTipoPrestador(0)">
+								<li ng-click="setTipoPrestador(0);buscandoPor = 'Médicos'">
 									<a id="axa-medico">Médicos</a>
 								</li>
-								<li ng-click="setTipoPrestador(1)">
+								<li ng-click="setTipoPrestador(1);buscandoPor = 'Hospitales'">
 									<a id="axa-hospitales">Hospitales</a>
 								</li>
-								<li ng-click="setTipoPrestador(2)">
+								<li ng-click="setTipoPrestador(2);buscandoPor = 'Módulos Hospitalarios'">
 									<a id="axa-modulos">Módulos Hospitalarios</a>
 								</li>
-								<li ng-click="setTipoPrestador(3)">
+								<li ng-click="setTipoPrestador(3);buscandoPor = 'Servicios Auxiliares'">
 									<a id="axa-aux">Servicios Auxiliares</a>
 								</li>
 							</ul>
@@ -210,12 +217,12 @@
         //Lista tipo de prestador
         $scope.lTP = [{tp:"HOSPITALES"},{tp:"MEDICOS"},{tp:"MODULOS HOSPITALARIOS"},{tp:"SERVICIOS AUXILIARES"},{tp:"AUTO CONSENTIDO"},{tp:"AUTO CON CHOFER"},{tp:"TALLERES"},{tp:"CRISTALERAS"},{tp:"AGENTES"},{tp:"VIAS"},{tp:"TIENDAS AXA"}];            
         
-        $scope.rutas = [{url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getCatalogosRequest"},{url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getPrestadoresServicio"}];
+        $scope.rutas = [{url:"http://10.133.13.96:8080/PrestadoresAxaServices/rest/prestadoresServicio/getCatalogosRequest"},{url:"http://10.133.13.96:8080/PrestadoresAxaServices/rest/prestadoresServicio/getPrestadoresServicio"}];
             
         $scope.prestadoresArgs ={estado:"2",delegacionMunicipio:"",nombreComun:"",especialidad:"",tipoPrestador:"",rfc:""};
 
-        $scope.argsPrestadores = {esAgentes:false,prestadoresArgs:{}};  
-
+          
+        $scope.argsPrestadores = {editar:false,conEspecialidad:false,esAgentes:false,prestadoresArgs:{}};
         
         $scope.getListaEstado = function (){
             $scope.args = {};
@@ -284,7 +291,7 @@
 	'<div><img src="/documents/47849/49735/clock-icon.png/50bbafe9-8390-4ecc-8f8a-bce85c7fc795?t=1453767665000"/></div>'+
 	'<div class="info-horarios">'+
 	'<p>'+utilValida(p.horarioAtencion1,'Horario 1')+' </p>'+
-	'<p>'+utilValida(p.horarioAtencion2,'Horario 2')+'</p>'+
+	'<p>'+utilValida(p.horarioAtencion1,'Horario 1')+'</p>'+
 	'</div>'+
 	'<div><img src="/documents/47849/49735/phone-icon.png/7741e82e-c3dc-424f-ae8e-6ecdb6a35b59?t=1453767670000"/></div>'+
 	'<div class="info-tel">'+
@@ -372,7 +379,8 @@
                                         loadMarkers();    
                                         cargando.close();
                                     } else{
-                                        cargando.close();                                        
+                                        cargando.close();
+                                        $scope.listaPrestadores=[];
                                         $scope.noRecords();
                                     }                                        
                                     console.log(data);                            
