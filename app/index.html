@@ -122,16 +122,19 @@ height: 410px;
       .td_60{
           width: 60px;
       }
+      #formBuscador{
+          display: -webkit-box;
+      }
 </style>
     
 <div ng-app="web_App" ng-controller="prestadorespanelAXACtrl">
       
     <div id="myTab">
   	<ul class="nav nav-tabs">
-            <li id="yui_css1"  class="active" ng-click="currentTp = '';currentTpl = templates[0].url;"><a href="#tab-1">AUTO</a></li>
-            <li id="yui_css2" ng-click="currentTp = '';currentTpl=templates[3].url;"><a href="#tab-2">SALUD</a></li>
-            <li id="yui_css3" ng-click="currentTp = '';currentTpl=templates[8].url;"><a href="#tab-3">AGENTE</a></li>
-            <li id="yui_css4" ng-click="currentTp = '';currentTpl=templates[10].url;"><a href="#tab-4">VIA</a></li>
+            <li id="yui_css1"  class="active" ng-click="currentTp = '';currentTpl = templates[0].url;resetResult()"><a href="#tab-1">AUTO</a></li>
+            <li id="yui_css2" ng-click="currentTp = '';currentTpl=templates[3].url;resetResult();fnHospitales();argsPrestadores.conEspecialidad='true'"><a href="#tab-2">SALUD</a></li>
+            <li id="yui_css3" ng-click="currentTp = '';currentTpl=templates[8].url;resetResult()"><a href="#tab-3">AGENTE</a></li>
+            <li id="yui_css4" ng-click="currentTp = '';currentTpl=templates[10].url;resetResult()"><a href="#tab-4">VIA</a></li>
   	</ul>
 
 <div class="tab-content">
@@ -139,22 +142,22 @@ height: 410px;
 <!--      tab correspondiente a AUTOS-->
     <div id="tab-1" class="tab-pane">
         <ul class="nav control-panel-bar-secondary nav-pills" role="menubar">
-            <li id="opc_1" class="active" role="presentation"  ng-click="currentTp='';currentTpl=templates[0].url;setTipoPrestador('4')" >
+            <li id="opc_1" class="active" role="presentation"  ng-click="currentTp='';currentTpl=templates[0].url;setTipoPrestador('4');resetResult();" >
             <a role="menuitem"> 
                 <span class="nav-item-label"> Auto consentido </span>
             </a>
             </li> 
-            <li role="presentation" ng-click="currentTp='';currentTpl=templates[7].url;setTipoPrestador('5')">
+            <li role="presentation" ng-click="currentTp='';currentTpl=templates[7].url;setTipoPrestador('5');resetResult()">
             <a role="menuitem"> 
                 <span class="nav-item-label"> Auto con chofer </span>
             </a>
             </li> 
-            <li role="presentation" ng-click="currentTp='';currentTpl=templates[1].url;setTipoPrestador('6')">
+            <li role="presentation" ng-click="currentTp='';currentTpl=templates[1].url;setTipoPrestador('6');resetResult();fnTalleres()">
             <a role="menuitem"> 
                 <span class="nav-item-label"> Talleres </span>
             </a>
             </li>   
-            <li role="presentation" ng-click="currentTp='';currentTpl=templates[2].url;setTipoPrestador('7')">
+            <li role="presentation" ng-click="currentTp='';currentTpl=templates[2].url;setTipoPrestador('7');resetResult()">
             <a role="menuitem"> 
                 <span class="nav-item-label"> Cristaleras </span>
             </a>
@@ -163,7 +166,7 @@ height: 410px;
     
         <br>
         <button class="btn btn-primary"  ng-click="mostrarBuscador = 'false';currentTp = currentTpl;restart()"> Nuevo Prestador </button>  	
-        <button class="btn btn-primary"  ng-click="mostrarBuscador = 'true';currentTpe = currentTpl;getListaEstado();seColumns();currentTp = ''"> Buscar Prestador </button>
+        <button class="btn btn-primary"  ng-click="currentTp = '';mostrarBuscador = 'true';currentTpe = currentTpl;getListaEstado();seColumns()" > Buscar Prestador </button>
         <br>                 
         
     </div>
@@ -171,30 +174,30 @@ height: 410px;
 <!--      tab correspondiente a SALUD-->
     <div id="tab-2">
     	<ul  class="nav control-panel-bar-secondary nav-pills" role="menubar">
-            <li id="opc_2"  role="presentation" ng-click="currentTp='';currentTpl=templates[3].url;setTipoPrestador('0')">
+            <li id="opc_2"  role="presentation" ng-click="currentTp='';currentTpl=templates[3].url;setTipoPrestador('0');argsPrestadores.conEspecialidad='true';resetResult();fnHospitales()">
             <a role="menuitem"> 
                 <span class="nav-item-label"> Hospitales</span>
             </a>
             </li> 
-            <li role="presentation" ng-click="currentTp='';currentTpl=templates[4].url;setTipoPrestador('1')">
+            <li role="presentation" ng-click="currentTp='';currentTpl=templates[4].url;setTipoPrestador('1');resetResult();fnMedicos()">
             <a role="menuitem"> 
                 <span class="nav-item-label"> Médicos</span>
             </a>
             </li> 
-            <li role="presentation" ng-click="currentTp='';currentTpl=templates[5].url;setTipoPrestador('2')">
+            <li role="presentation" ng-click="currentTp='';currentTpl=templates[5].url;setTipoPrestador('2');resetResult();fnModHospitalarios()">
             <a role="menuitem"> 
                 <span class="nav-item-label"> Módulos Hospitalarios</span>
             </a>
             </li>   
-            <li role="presentation" ng-click="currentTp='';currentTpl=templates[6].url;setTipoPrestador('3')">
+            <li role="presentation" ng-click="currentTp='';currentTpl=templates[6].url;setTipoPrestador('3');resetResult();getEspecialidades('3');fnServAux();argsPrestadores.conEspecialidad='true'">
             <a role="menuitem"> 
                 <span class="nav-item-label"> Servicios Auxiliares</span>
             </a>
             </li>         
    	</ul>        
 		<br>
-		<button class="btn btn-primary"  ng-click="mostrarBuscador = 'false'; currentTp = currentTpl"> Nuevo Prestador </button>  	
-		<button class="btn btn-primary"  ng-click="currentTp = '';mostrarBuscador = 'true';getListaEstado()"> Buscar Prestador </button>
+		<button class="btn btn-primary"  ng-click="mostrarBuscador = 'false'; currentTp = currentTpl;restart()"> Nuevo Prestador </button>  	
+		<button class="btn btn-primary"  ng-click="currentTp = '';mostrarBuscador = 'true';currentTpe = currentTpl;getListaEstado();seColumns();argsPrestadores.editar='true';"> Buscar Prestador </button>
 		<br>
  
  </div>
@@ -203,12 +206,12 @@ height: 410px;
 <!--      tab correspondiente a AGENTES-->
 <div id="tab-3" class="tab-pane">
     	<ul id="menuAgentes" class="nav control-panel-bar-secondary nav-pills" role="menubar">
-            <li id="opc_3" class="active" role="presentation" ng-click="currentTp='';currentTpl=templates[8].url;setTipoPrestador('10')">
+            <li id="opc_3" class="active" role="presentation" ng-click="currentTp='';currentTpl=templates[8].url;setTipoPrestador('10');resetResult()">
             <a role="menuitem" > 
                 <span class="nav-item-label"> Tiendas AXA </span>
             </a>
             </li> 
-            <li role="presentation" ng-click="currentTp='';currentTpl=templates[9].url;setTipoPrestador('8')">
+            <li role="presentation" ng-click="currentTp='';currentTpl=templates[9].url;setTipoPrestador('8');resetResult()">
             <a role="menuitem"> 
                 <span class="nav-item-label"> Agentes </span>
             </a>
@@ -234,14 +237,15 @@ height: 410px;
     <div id="tpl-content" ng-include src="currentTp" onload='onloadController()'></div>
 
 <!--     Seccion de busqueda prestador-->
-<div id="buscarPrestador" ng-show="mostrarBuscador">
+<div id="buscarPrestador" ng-if="mostrarBuscador">
     <br>
     <label>Criterios de búsqueda</label>
     <hr>
     <div id="critsBusqueda">
+    <form id="formBuscador" name="formBuscador">
     <div id="critBusqueda_2">
-        <label>Estado:</label>
-        <select  ng-change="prestadoresArgs.estado = selectedEstados.value" ng-model="selectedEstados" ng-options="opt as opt.label for opt in listaDeEstados">
+        <label>Estado: * </label>
+        <select  ng-required="true"  ng-change="prestadoresArgs.estado = selectedEstadosBusqueda.value" ng-model="selectedEstadosBusqueda" ng-options="opt as opt.label for opt in listaDeEstados">
 			<option value="">Seleccione</option>
         </select>  
     </div>
@@ -250,31 +254,32 @@ height: 410px;
         <input type="text" ng-model="rfc" title="capture rfc del prestador"/>    
     </div>
     <div id="btnBuscar">
-        <button type="button" class="btn btn-primary"  ng-click="getListaPrestadores()" >Aceptar</button>
+        <button type="button" class="btn btn-primary" data-ng-disabled='!formBuscador.$valid' ng-click="getListaPrestadores()" >Aceptar</button>
     </div>
-
+    </form>
 <!-- Termina div de criterios de busqueda-->
 </div>
 
 
 <br>
     <div id="resultadosdeBusqueda">
-        <div id="norecords" ng-show="!records" >
+        <div id="norecords" ng-if="!records" >
         </div>
-        <div id="records"  ng-show="records">
+        <div id="records"  ng-if="records">
             <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
             <tr ng-repeat="row in data">
                 <td data-title="'Nombre Comun'" ng-bind="row.nombre" ></td>
                 <td data-title="'RFC'" class="td_60" ng-bind="row.rfc"></td>
                 <td data-title="'Razón social'" ng-bind="row.razonSocial"></td>                
-                <td data-title="'Red de Preferencia'" ng-show="display[0].dis"  ng-bind="row.redPreferencia"></td>
-                <td data-title="'Plan'" ng-show="display[1].dis" ng-bind="row.plan"></td>
-                <td data-title="'Gama'" ng-show="display[2].dis" ng-bind="row.gama" ></td>
+                <td data-title="'Red de Preferencia'" ng-show="display.redPreferencia"  ng-bind="row.redPreferencia"></td>
+                <td data-title="'Plan'" ng-show="display.plan" ng-bind="row.plan"></td>
+                <td data-title="'Gama'" ng-show="display.gama" ng-bind="row.gama" ></td>
                 <td data-title="'Horario'" >Hora 1: {{row.horarioAtencion1 || ''}} <br> Hora 2:{{row.horarioAtencion2 ||'' }} </td>
                 <td data-title="'Email'" > <div ng-repeat="mail in row.emails">{{'Email '+ ($index+1)+': '+mail.email || '' }}<br></div>  </td>
-                <td data-title="'Teléfono'" ><div ng-repeat="tel in row.direccion[0].telefonos">  {{'Tel '+($index+1)+': '+tel.numero || '' }} - {{ tel.tipoTelefono || '' }}<br> </div></td>
+                <td data-title="'Teléfono'" ><div ng-repeat="tel in row.direccion[0].telefonos">  {{'Tel '+($index+1)+': '+tel.numero || '' }} {{ tel.tipoTelefono || '' }}<br> </div></td>
                 <td data-title="'Direccion'" ng-bind="+row.direccion[0].estado +','+row.direccion[0].municipio+', CP:'+row.direccion[0].codigoPostal +', Colonia: '+row.direccion[0].colonia +', Calle:'+row.direccion[0].calle +', Num Ext. '+row.direccion[0].numeroExterior" ></td>
                 <td data-title="'Editar'" class="td_60" >  <a ng-click="mostrarEditar(row)" class="linkeditar">Editar</a> </td>
+                <td data-title="'Eli...'" class="td_60" >  <a ng-click="" class="linkeditar">x</a> </td>
             </tr>
             </table>        
         </div>
@@ -296,15 +301,17 @@ height: 410px;
 </div>
 <div id="success_">
     <a class="b-close">X</a>    
-    Información guardado correctamente <br><br>
+    Información guardado correctamente <br>
     <img src="/documents/45516/48801/succes.png" alt="">    
 </div>
 
-<div id="error_">
+<div id="error_"  >
     <a class="b-close">X</a>
-    Ha ocurrido un error <br> <br>
+    Ha ocurrido un error <br>
     <img src="/documents/45516/48801/error.png" alt="">
 </div>
+
+
 <!--Termina el tag con id myTab-->
 </div>
 
@@ -313,7 +320,7 @@ height: 410px;
 <br>
 <label class="tituloPres">AUTO <img src="/documents/45516/48801/right164.png" /> Auto Consentido <img src="/documents/45516/48801/right164.png" /> {{operacion}}</label>
 <br>
-<form ng-init="getTiposdeServicio(4);getPais();" id="nuevoPForm" name="nuevoPForm">
+<form ng-init="getTiposdeServicio(4);getPais();" id="nuevoPForm" name="nuevoPForm" novalidate>
 <div id="nuevoToggler">
   <h4 class="header toggler-header-collapsed acordiontitulo">Datos Generales Prestador</h4>
   <div class="content toggler-content-collapsed">
@@ -450,17 +457,19 @@ height: 410px;
     <div>
         <div class="form-group"> 
          <label class="control-label">Teléfono 1: *</label>
-         <input id="tel1" name="tel1" ng-required="true" ng-model="prestadorTelefono[0].numero" type="text" maxlength="50"/>
+         <input id="tel1" name="tel1" ng-required="true" ng-model="prestadorTelefono[0].numero" type="text" maxlength="10"/>
          <div ng-show="nuevoPForm.tel1.$dirty && nuevoPForm.tel1.$invalid" class="camporequerido" ng-bind="camposrequeridos">                     
-         </div>           
+         </div> 
+         <label class="control-label">Ext:</label>
+         <input id="tel1" name="tel1" ng-model="prestadorTelefono[0].extension" type="text" maxlength="4"/>
         </div>
         <div class="form-group"> 
          <label class="control-label">Teléfono 2: </label>
-         <input ng-model="prestadorTelefono[1].numero" type="text" maxlength="50" />
+         <input ng-model="prestadorTelefono[1].numero" type="text" maxlength="10" />
         </div>   
         <div class="form-group"> 
          <label class="control-label">Celular: </label>
-         <input ng-init="prestadorTelefono[2].tipoTelefono = 'Celular' " ng-model="prestadorTelefono[2].numero" type="text" maxlength="50" />
+         <input ng-init="prestadorTelefono[2].tipoTelefono = 'Celular' " ng-model="prestadorTelefono[2].numero" type="text" maxlength="10" />
         </div>        
     </div>
   </div>
@@ -492,7 +501,7 @@ height: 410px;
 <!--Auto con chofer-->
 <script type="text/ng-template" id="/view_BB.html" >
 <br>
-<label class="tituloPres">AUTO <img src="/documents/45516/48801/right164.png" /> Auto con chofer <img src="/documents/45516/48801/right164.png" /> Nuevo Prestador</label>
+<label class="tituloPres">AUTO <img src="/documents/45516/48801/right164.png" /> Auto con chofer <img src="/documents/45516/48801/right164.png" /> {{operacion}}</label>
 <hr>
 <form ng-init="getTiposdeServicio(5);getPais();" id="nuevoPForm" name="nuevoPForm">
 <div id="nuevoToggler">
@@ -670,12 +679,13 @@ height: 410px;
 </form>       
 </script>    
 
+
 <!--Talleres-->
-<script type="text/ng-template" id="/view_B.html" >
+<script type="text/ng-template" id="/view_B.html"  >
 <br>
-<label class="tituloPres">AUTO <img src="/documents/45516/48801/right164.png" /> Talleres <img src="/documents/45516/48801/right164.png" /> Nuevo Prestador</label>
+<label class="tituloPres">AUTO <img src="/documents/45516/48801/right164.png" /> Talleres <img src="/documents/45516/48801/right164.png" /> {{operacion}}</label>
 <hr>
-<form ng-init="load(6,0);" id="nuevoPForm" name="nuevoPForm" novalidate>
+<form ng-init="getTiposdeServicio(6);getPais()" id="nuevoPForm" name="nuevoPForm" novalidate>
 <div id="nuevoToggler">
   <h4 class="header toggler-header-collapsed acordiontitulo">Datos Generales Prestador</h4>
   <div class="content toggler-content-collapsed">
@@ -689,14 +699,7 @@ height: 410px;
                     </select>
                     <div ng-show="nuevoPForm.tipServ.$dirty &&  nuevoPForm.tipServ.$invalid" class="camporequerido" ng-bind="camposrequeridos"></div>
         </div>     
-        <div ng-repeat="espe in especialidades" class="form-group">             
-                <label class="control-label"> Especialidad: * </label>
-                <select id="especia_{{$index}}" name="especia_{{$index}}" ng-change="setEspecialidades(espe.selected.value)" ng-required="true" ng-model="espe.selected" ng-options="opt as opt.label for opt in listaDeEspecialidad" >
-			<option value="">Seleccione</option>
-                </select>
-                <button  ng-click="setEspecialidad($index)" > + </button>
-                <div ng-show="nuevoPForm.especia_{{$index}}.$dirty &&  nuevoPForm.especia_{{$index}}.$invalid" class="camporequerido" ng-bind="camposrequeridos"></div>
-        </div>           
+        <br>
         <div class="form-group">
                                 <label class="control-label"> Nombre común:* </label>
                                 <input  id="nomcomun" name="nomcomun" type="text" ng-model="prestador.nombre" ng-required="true" maxlength="100" />
@@ -875,7 +878,7 @@ height: 410px;
 <br>
 <label class="tituloPres">AUTO <img src="/documents/45516/48801/right164.png" /> Cristaleras <img src="/documents/45516/48801/right164.png" /> Nuevo Prestador</label>
 <hr>
-<form ng-init="load(7,0);" id="nuevoPForm" name="nuevoPForm" novalidate>
+<form ng-init="load(7,7);" id="nuevoPForm" name="nuevoPForm" novalidate>
 <div id="nuevoToggler">
   <h4 class="header toggler-header-collapsed acordiontitulo">Datos Generales Prestador</h4>
   <div class="content toggler-content-collapsed">
@@ -1059,7 +1062,7 @@ height: 410px;
 <br>
 <label class="tituloPres">SALUD <img src="/documents/45516/48801/right164.png" /> Hospitales <img src="/documents/45516/48801/right164.png" /> Nuevo Prestador</label>
 <hr>
-<form ng-init="getTiposdeServicio(0);getPais()" id="nuevoPForm" name="nuevoPForm" novalidate>
+<form ng-init="load(0,0);" id="nuevoPForm" name="nuevoPForm" novalidate>
 <div id="nuevoToggler">
   <h4 class="header toggler-header-collapsed acordiontitulo">Datos Generales Prestador</h4>
   <div class="content toggler-content-collapsed">
@@ -1073,6 +1076,15 @@ height: 410px;
                             </select>
                     <div ng-show="nuevoPForm.tipServ.$dirty &&  nuevoPForm.tipServ.$invalid" class="camporequerido" ng-bind="camposrequeridos"></div>
         </div>
+        <br>
+        <div class="form-group"> 
+        <label class="control-label">Especialidades:</label>
+        </div>
+        <br>
+        <div ng-repeat="espe in listaDeEspecialidad" class="form-group">             
+                <input ng-model="espe.chekeado" type="checkbox" />{{espe.descripcion}} <br>                                                       
+        </div>  
+        <br>
         <div class="form-group">
                                 <label class="control-label"> Nombre común:* </label>
                                 <input  id="nomcomun" name="nomcomun" type="text" ng-model="prestador.nombre" ng-required="true"/>
@@ -1215,7 +1227,9 @@ height: 410px;
          <label class="control-label">Teléfono 1: *</label>
          <input id="tel1" name="tel1" ng-required="true" ng-model="prestadorTelefono[0].numero" type="text" maxlength="50"/>
          <div ng-show="nuevoPForm.tel1.$dirty && nuevoPForm.tel1.$invalid" class="camporequerido" ng-bind="camposrequeridos">                     
-         </div>           
+         </div>  
+         <label class="control-label">Ext:</label>
+         <input id="tel1" name="tel1" ng-model="prestadorTelefono[0].extension" type="text" maxlength="4"/>
         </div>
         <div class="form-group"> 
          <label class="control-label">Teléfono 2: </label>
@@ -1259,28 +1273,20 @@ height: 410px;
 <br>
 <label class="tituloPres">SALUD <img src="/documents/45516/48801/right164.png" /> Médicos <img src="/documents/45516/48801/right164.png" /> Nuevo Prestador</label>
 <hr>
-<form ng-init="load(1,1);" id="nuevoPForm" name="nuevoPForm" novalidate>
+<form ng-init="getPais();getEspecialidades(1);" id="nuevoPForm" name="nuevoPForm" novalidate>
 <div id="nuevoToggler">
   <h4 class="header toggler-header-collapsed acordiontitulo">Datos Generales Prestador</h4>
   <div class="content toggler-content-collapsed">
     <div class="datgeneralPrestador">
-    <div>
-        <div class="form-group">   
-                    <label class="control-label"> Tipo de Servicio:* </label>
-                    <select id="tipServ" name="tipServ" ng-change="prestador.idTipoServicio = modelTipoServicio.value" ng-required="true" 
-                                    ng-model="modelTipoServicio" ng-options="opt.label for opt in listaTipoServicio" >                                            
-                                            <option value="">Seleccione</option>
-                    </select>
-                    <div ng-show="nuevoPForm.tipServ.$dirty &&  nuevoPForm.tipServ.$invalid" class="camporequerido" ng-bind="camposrequeridos"></div>
-        </div>     
-        <div ng-repeat="espe in especialidades" class="form-group">             
-                <label class="control-label"> Especialidad: * </label>
-                <select id="especia_{{$index}}" name="especia_{{$index}}" ng-change="setEspecialidades(espe.selected.value)" ng-required="true" ng-model="espe.selected" ng-options="opt as opt.label for opt in listaDeEspecialidad" >
-			<option value="">Seleccione</option>
-                </select>
-                <button  ng-click="setEspecialidad($index)" > + </button>
-                <div ng-show="nuevoPForm.especia_{{$index}}.$dirty &&  nuevoPForm.especia_{{$index}}.$invalid" class="camporequerido" ng-bind="camposrequeridos"></div>
-        </div>           
+    <div>            
+        <div class="form-group"> 
+        <label class="control-label">Especialidades:</label>
+        </div>
+        <br>
+        <div ng-repeat="espe in listaDeEspecialidad" class="form-group">             
+                <input ng-model="espe.chekeado" type="checkbox" />{{espe.descripcion}} <br>                                                       
+        </div>  
+        <br>           
         <div class="form-group">
                                 <label class="control-label"> Nombre común:* </label>
                                 <input  id="nomcomun" name="nomcomun" type="text" ng-model="prestador.nombre" ng-required="true" maxlength="100" />
@@ -1314,12 +1320,12 @@ height: 410px;
                             <label class="control-label"> Plan: *</label>
                             <input id="plan" name="plan"  ng-model="prestador.plan" ng-required="true" type="text" maxlength="4" />
                             <div ng-show=" nuevoPForm.plan.$dirty &&  nuevoPForm.plan.$invalid" class="camporequerido" ng-bind="camposrequeridos"></div>                             
-        </div>
+        </div>  
         <div class="form-group">
                             <label class="control-label"> Gama: *</label>
                             <input id="gama" name="gama" ng-model="prestador.gama" ng-required="true" type="text" maxlength="50" />
                             <div ng-show=" nuevoPForm.gama.$dirty &&  nuevoPForm.gama.$invalid" class="camporequerido" ng-bind="camposrequeridos"></div>                              
-        </div>          
+        </div>
     </div>
    
     <div>
@@ -1467,7 +1473,7 @@ height: 410px;
 <br>
 <label class="tituloPres">SALUD <img src="/documents/45516/48801/right164.png" /> Módulos Hospitalarios <img src="/documents/45516/48801/right164.png" /> Nuevo Prestador</label>
 <hr>
-<form ng-init="load(2,1);" id="nuevoPForm" name="nuevoPForm" novalidate>
+<form ng-init="load(2,'');" id="nuevoPForm" name="nuevoPForm" novalidate>
 <div id="nuevoToggler">
   <h4 class="header toggler-header-collapsed acordiontitulo">Datos Generales Prestador</h4>
   <div class="content toggler-content-collapsed">
@@ -1601,17 +1607,17 @@ height: 410px;
     <div>
         <div class="form-group"> 
          <label class="control-label">Teléfono 1: *</label>
-         <input id="tel1" name="tel1" ng-required="true" ng-model="prestadorTelefono[0].numero" type="text" maxlength="50"/>
+         <input id="tel1" name="tel1" ng-init="prestadorTelefono[0].tipoTelefono='Oficina'" ng-required="true" ng-model="prestadorTelefono[0].numero" type="text" maxlength="50"/>
          <div ng-show="nuevoPForm.tel1.$dirty && nuevoPForm.tel1.$invalid" class="camporequerido" ng-bind="camposrequeridos">                     
          </div>           
         </div>
         <div class="form-group"> 
          <label class="control-label">Teléfono 2: </label>
-         <input ng-model="prestadorTelefono[1].numero" type="text" maxlength="50" />
+         <input ng-init="prestadorTelefono[1].tipoTelefono='Oficina'" ng-model="prestadorTelefono[1].numero" type="text" maxlength="50" />
         </div>   
         <div class="form-group"> 
          <label class="control-label">Celular: </label>
-         <input ng-init="prestadorTelefono[2].tipoTelefono = 'Celular' " ng-model="prestadorTelefono[2].numero" type="text" maxlength="50" />
+         <input ng-init="prestadorTelefono[2].tipoTelefono='Celular'" ng-model="prestadorTelefono[2].numero" type="text" maxlength="50" />
         </div>        
     </div>
   </div>
@@ -1647,7 +1653,7 @@ height: 410px;
 <br>
 <label class="tituloPres">SALUD <img src="/documents/45516/48801/right164.png" /> Servicios Auxiliares <img src="/documents/45516/48801/right164.png" /> Nuevo Prestador</label>
 <hr>
-<form ng-init="load(3,1);" id="nuevoPForm" name="nuevoPForm" novalidate>
+<form ng-init="load(3,'');" id="nuevoPForm" name="nuevoPForm" novalidate>
 <div id="nuevoToggler">
   <h4 class="header toggler-header-collapsed acordiontitulo">Datos Generales Prestador</h4>
   <div class="content toggler-content-collapsed">
@@ -1661,6 +1667,15 @@ height: 410px;
                     </select>
                     <div ng-show="nuevoPForm.tipServ.$dirty &&  nuevoPForm.tipServ.$invalid" class="camporequerido" ng-bind="camposrequeridos"></div>
         </div>  
+        <br>
+        <div class="form-group"> 
+        <label class="control-label">Especialidades:</label>
+        </div>
+        <br>
+        <div ng-repeat="espe in listaDeEspecialidad" class="form-group">             
+                <input ng-model="espe.chekeado" type="checkbox" />{{espe.descripcion}} <br>                                                       
+        </div>  
+        <br>
         <div ng-repeat="espe in especialidades" class="form-group">             
                 <label class="control-label"> Especialidad: * </label>
                 <select id="especia_{{$index}}" name="especia_{{$index}}" ng-change="setEspecialidades(espe.selected.value)" ng-required="true" ng-model="espe.selected" ng-options="opt as opt.label for opt in listaDeEspecialidad" >
@@ -1790,8 +1805,9 @@ height: 410px;
         <div class="form-group"> 
          <label class="control-label">Teléfono 1: *</label>
          <input id="tel1" name="tel1" ng-required="true" ng-model="prestadorTelefono[0].numero" type="text" maxlength="50"/>
-         <div ng-show="nuevoPForm.tel1.$dirty && nuevoPForm.tel1.$invalid" class="camporequerido" ng-bind="camposrequeridos">                     
-         </div>           
+         <div ng-show="nuevoPForm.tel1.$dirty && nuevoPForm.tel1.$invalid" class="camporequerido" ng-bind="camposrequeridos"></div>      
+         <label class="control-label">Ext:</label>
+         <input id="tel1" name="tel1" ng-model="prestadorTelefono[0].extension" type="text" maxlength="4"/>
         </div>
         <div class="form-group"> 
          <label class="control-label">Teléfono 2: </label>
@@ -2421,7 +2437,7 @@ height: 410px;
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
-<!--    <script src="/documents/45516/45726/app.js"></script>-->
+    <!--    <script src="/documents/45516/45726/app.js"></script>-->
     <!-- <script src="/documents/45516/45726/prestadores-controller.js"></script>-->
     <!-- endbuild -->
     
@@ -2446,7 +2462,8 @@ height: 410px;
 			"idTipoPrestador":"",
 			"tipoPrestador":"",
 			"tipoServicio":"",
-			"idTipoServicio":"",					
+			"idTipoServicio":"",
+                        "idTipoServicioBack":"",
 			"cveEstatus":"",			
 			"especialidad":[],
 			"direccion":[],
@@ -2458,7 +2475,7 @@ height: 410px;
         this.getDireccion = function(){
             return [{
                         "idDireccion" :"",
-			"idPrestador" :"",			
+			"idPrestador" :"",                        
 			"pais" :"",			
 			"idEstado" :"",
 			"estado" :"",
@@ -2491,48 +2508,44 @@ height: 410px;
         });
         
         app.controller('prestadorespanelAXACtrl',['$scope','$http','$filter','$q','ngTableParams','prestadorModel',
-        function ($scope,$http, $filter, $q, ngTableParams,prestadorModel) {
-            
-            $scope.camposrequeridos = '¡Requerido!';                 
+        function ($scope,$http, $filter, $q, ngTableParams,prestadorModel) {            
+            $scope.camposrequeridos = '¡Requerido!';                       
+            $scope.argsPrestadores = {editar:false,conEspecialidad:false,esAgentes:false,prestadoresArgs:{}};
+            var $editando = null;
             //objeto para almacenar la informacion del prestador(prestadorVo)            
             $scope.restart = function(){
                 $scope.operacion = 'Nuevo Prestador'
                 $scope.records = false;
-                $scope.editar = false;
+                $scope.editar = false;                                 
                 $scope.prestador = prestadorModel.getPrestador();            
                 $scope.prestadorDireccion = prestadorModel.getDireccion();             
                 $scope.prestadorTelefono = prestadorModel.getTelefono();            
-                $scope.prestadorEmail = prestadorModel.getEmails();
+                $scope.prestadorEmail = prestadorModel.getEmails();                                     
                 $scope.listaDelegaciones = [];
                 $scope.listaDeEstados = [];
+                $scope.selectRedPreferencia = null;
             };            
-            $scope.restart();
-            
+            $scope.restart();            
             $scope.args = {};            
             $scope.listaRedPref = [{label:'SI',value:'SI'},{label:'NO',value:'NO'}];
-            //Claves para la consulta de catalogos
-            $scope.especialidades = [{rows:''}];            
+            //Claves para la consulta de catalogos                     
             $scope.catalogos = [{name:'CATPAIS'},{name:'CATESTADO'},{name:'CATMUNICIPIO'},{name:'CATTIPOESPECIALIDAD'},{name:'CATIPOPRESTADOR'},{name:'CATTIPOSERVICIO'},{name:'CATRAMO'}];
             $scope.listaRamos =[{ramo:'AUTOS'},{ramo:'SALUD'},{ramo:'AGENTE'},{ramo:'VIA'}];            
             $scope.metodo = [{type:'POST'},{type:'GET'}];
-            $scope.display = [{dis:false},{dis:false},{dis:false}];
+            $scope.display = {redPreferencia:false,plan:false,gama:false};
             //url para las peticiones
             $scope.rutas = [
                 {url:'http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getCatalogosRequest'},
                 {url:'http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getPrestadoresServicio'},
                 {url:'http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/saveOrUpdatePrestadores'},
-                {url:'http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getRamosRequest'}
-            ];            
+                {url:'http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getRamosRequest'},
+                {url:'http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getEspecialidadesRequest'}];            
             //Lista tipo de prestador
             $scope.lTP = [{tp:'HOSPITALES'},{tp:'MEDICOS'},{tp:'MODULOS HOSPITALARIOS'},{tp:'SERVICIOS AUXILIARES'},{tp:'AUTO CONSENTIDO'},{tp:'AUTO CON CHOFER'},{tp:'TALLERES'},{tp:'CRISTALERAS'},{tp:'AGENTES'},{tp:'VIAS'},{tp:'TIENDAS AXA'}];                                    
-            $scope.prestadoresArgs ={estado:'',delegacionMunicipio:'',nombreComun:'',especialidad:'',tipoPrestador:'',rfc:''};            
-            $scope.argsPrestadores = {esAgentes:false,prestadoresArgs:{}};
-		   
+            $scope.prestadoresArgs ={estado:'',delegacionMunicipio:'',nombreComun:'',especialidad:'',tipoPrestador:'',rfc:''};                        		   
             $scope.selectedTipoPrestador = [];                                             
-            $scope.templates = [{url: '/view_A.html'},{url: '/view_B.html'},{url: '/view_C.html'},{url: '/view_D.html'},{url: '/view_E.html'},{url: '/view_F.html'},{url: '/view_G.html'},{url: '/view_BB.html'},{url: '/view_H.html'},{url: '/view_I.html'},{url: '/view_J.html'}]; 
-        
-            $scope.listaTipoPrestadores = [];
-            
+            $scope.templates=[{url: '/view_A.html'},{url: '/view_B.html'},{url: '/view_C.html'},{url: '/view_D.html'},{url: '/view_E.html'},{url: '/view_F.html'},{url: '/view_G.html'},{url: '/view_BB.html'},{url: '/view_H.html'},{url: '/view_I.html'},{url: '/view_J.html'}];         
+            $scope.listaTipoPrestadores = [];                        
             $scope.getTipoPrestadores = function(){
             $scope.args = {};    
             $scope.args.cveCatalogo=$scope.catalogos[4].name; 
@@ -2552,22 +2565,16 @@ height: 410px;
             };
         //Consultar los tipos de prestador al cargar la pagina
         $scope.getTipoPrestadores();        
-        //Por default al iniciar se carga el template de nuevo prestador para auto consentido
-        
+        //Por default al iniciar se carga el template de nuevo prestador para auto consentido        
         $scope.currentTpl = $scope.templates[0].url;
         $scope.setTipoPrestador = function (cvTipPrestador){
             //Cuando se abre la pagina de administración se muestra por default el ramo AUTOS con el tipo de prestador 
             //como auto consentido 
             if(cvTipPrestador !== ''){
                 var $tipoPredorId = $filter('filter')($scope.listaTipoPrestadores,{label : $scope.lTP[cvTipPrestador].tp},true);
-                $scope.prestador.idTipoPrestador = $tipoPredorId[0].value;
+                $scope.tempIdTipoPrestador = $tipoPredorId[0].value;
                 console.log('cve: '+$tipoPredorId[0].value+' label: '+$tipoPredorId[0].label);
             }
-        };
-        
-        $scope.setEspecialidad = function (ind){
-            console.log(ind);
-            $scope.especialidades.push({rows:''});   
         };
         $scope.listaEspecialidades = [];
         $scope.setEspecialidades = function(val){
@@ -2591,27 +2598,24 @@ height: 410px;
                         expanded: false,
                         header: '.header',
                         transition: {duration: 0.2,easing: 'cubic-bezier(0, 0.1, 0, 1)'}
-                    });});                
-                $scope.especialidades = [{rows:''}];
+                    });});                                
                 $scope.listaEspecialidades = [];
                 $scope.listaRamosAgentes =[];
-            };
+        };
 
     $scope.getEspecialidades = function(pos){         
-        $scope.args = {};
-        $scope.args.catalogoDominio = $scope.listaRamos[pos].ramo;
-        $scope.args.cveCatalogo=$scope.catalogos[3].name;  
+        $scope.args = {idTipoPrestador:$scope.lTP[pos].tp};            
         try{
             $http({ 
                 method:$scope.metodo[0].type,
                 data:  $scope.args,
-                url :  $scope.rutas[0].url
+                url :  $scope.rutas[4].url
             }).success(function(data){
-                $scope.listaDeEspecialidad = data.listaCatalogos;
-                console.log('obteniendo lista de ramos');
+                $scope.listaDeEspecialidad = data.listaEspecialidades;
+                console.log('obteniendo lista de especialidades');
             });        
         }catch(e){
-            console.log('Error en la petición de ramos');
+            console.log('Error en la petición de especialidades');
         }           
     };
 
@@ -2725,23 +2729,26 @@ $scope.savePrestador = function(){
     try{
         $scope.prestadorDireccion[0].telefonos = $scope.prestadorTelefono;
         $scope.prestador.direccion = $scope.prestadorDireccion;
+        $scope.prestador.idTipoPrestador = $scope.tempIdTipoPrestador;
         $scope.prestador.emails = $scope.prestadorEmail; 
-        $scope.prestador.especialidad = $scope.listaEspecialidades;
+        $scope.prestador.especialidad = $scope.listaDeEspecialidad;
         $scope.prestador.agenteRamos = $scope.listaRamosAgentes;
         $scope.args = {upsertPrestador: $scope.prestador};
         
         console.log($scope.args);
-        var bPopup = $('#loading_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});
+        var $bPopup = $('#loading_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});
         
         $http({
             method:$scope.metodo[0].type,
             data:  $scope.args,
             url :  $scope.rutas[2].url
         }).success(function(data){   
-            bPopup.close();            
-            if(data.estatus.success){                
+            $bPopup.close(); 
+            if($editando !== null){
+                $editando.close();
+            }
+            if(data.estatus.success){              
                 $scope.mostrarSucces();                
-                $scope.nuevoPForm.$setPristine();
             }else{
                 $scope.mostrarError();
             }                        
@@ -2759,7 +2766,7 @@ $scope.tableParams = new ngTableParams({
                     count: 10
                 }, {
                     total: $scope.listaPrestadores.length, 
-                getData: function ($defer, params) {
+                    getData: function ($defer, params) {
                         $scope.data = $scope.listaPrestadores.slice((params.page() - 1) * params.count(), params.page() * params.count());
                         $defer.resolve($scope.data);
                 }
@@ -2767,9 +2774,10 @@ $scope.tableParams = new ngTableParams({
 
 $scope.getListaPrestadores = function (){
 //Asigna valores de los criterios de busqueda seleccionados
-    $scope.prestadoresArgs.tipoPrestador = $scope.prestador.idTipoPrestador;    
+    $scope.prestadoresArgs.tipoPrestador = $scope.tempIdTipoPrestador;    
     $scope.prestadoresArgs.rfc = $scope.rfc;
     $scope.argsPrestadores.esAgentes = false;
+    $scope.argsPrestadores.editar = true;
     $scope.argsPrestadores.prestadoresArgs = $scope.prestadoresArgs;
     console.log('cveTipoPrestador:' + $scope.prestadoresArgs.tipoPrestador + 'cveEstado:' +$scope.prestadoresArgs.estado+ 'rfc:' + $scope.rfc);
     try{
@@ -2782,8 +2790,7 @@ $scope.getListaPrestadores = function (){
             if(data.estatus.success){
                 $scope.listaPrestadores = data.prestadorServicio;  
                 $scope.tableParams.total($scope.listaPrestadores.length);
-                $scope.tableParams.reload();
-                        
+                $scope.tableParams.reload();                        
                 $scope.records = true;
             }else{
                 $scope.records = false;
@@ -2796,32 +2803,63 @@ $scope.getListaPrestadores = function (){
         console.log('error en get prestadores');
     }	  
 };
-
-$scope.seColumns = function(){
-    $scope.display = [{dis:false},{dis:false},{dis:false}];
+$scope.seColumns = function(){ 
+    $scope.selectedEstadosBusqueda = null;
+    $scope.listaPrestadores=[];
+    $scope.records = false;        
 };
-
 $scope.load = function (indA,indB){
             $scope.getTiposdeServicio(indA);//indA:id del tipo de prestador para traer los tipos de servicio relacionado a un tipo de prestador
-            $scope.getPais();
-            $scope.getEspecialidades(indB); //indB:id del ramo para traer las especialidades realacionados al ramo   
+            $scope.getPais();       
+            if(!$scope.editar && indB !== ''){
+                $scope.getEspecialidades(indB);
+            }
 };
-
-
-$scope.mostrarEditar = function(p){
-            
+$scope.mostrarEditar = function(p){            
             $scope.operacion = 'Editar Prestador';
             $scope.editar = true;            
             console.log(p);
             $scope.prestador = p; 
-            $scope.prestadorDireccion = p.direccion;
-            $scope.prestadorTelefono = p.direccion[0].telefonos;
-            $scope.prestadorEmail = p.emails;
+            $scope.prestador.userName = "adminEdit";
+            $scope.prestadorDireccion = p.direccion;            
+            var $vacio = "";
+            $scope.prestadorTelefono = prestadorModel.getTelefono();            
+            $scope.prestadorEmail = prestadorModel.getEmails();     
+            
+            if(p.direccion[0].telefonos !== null){
+                $scope.prestadorTelefono[0] = p.direccion[0].telefonos[0];
+                if(p.direccion[0].telefonos.length === 1 ){
+                    $scope.prestadorTelefono[1] = $scope.prestadorTelefono[1];
+                    $scope.prestadorTelefono[2] = $scope.prestadorTelefono[2];
+                }else if(p.direccion[0].telefonos.length === 2){
+                    $scope.prestadorTelefono[1] = p.direccion[0].telefonos[1];
+                    $scope.prestadorTelefono[2] = $scope.prestadorTelefono[2];
+                }else if(p.direccion[0].telefonos.length >= 3){
+                    $scope.prestadorTelefono[2] = p.direccion[0].telefonos[2];
+                }
+            }                             
+            if(p.emails !== null ){
+                $scope.prestadorEmail[0] = p.emails[0];
+                if(p.emails.length === 1 ){                    
+                    $scope.prestadorEmail[1] = $scope.prestadorEmail[1];
+                }else if(p.emails.length >= 2){
+                    $scope.prestadorEmail[1] = p.emails[1];
+                }
+            }                       
+            $scope.listaDeEspecialidad =p.especialidad;            
             console.log($scope.prestador);
-            var $tipoServicio = $filter('filter')($scope.listaTipoServicio,{value: p.idTipoServicio},true); 
-            $scope.modelTipoServicio = $tipoServicio[0]; 
-            var $pais = $filter('filter')($scope.Listapais,{label: p.direccion[0].pais},true); 
-            $scope.modelPais = $pais[0]; 
+            if(p.idTipoServicio !== null){
+                var $tipoServicio = $filter('filter')($scope.listaTipoServicio,{value: p.idTipoServicio},true); 
+                if($tipoServicio !== null){
+                    $scope.modelTipoServicio = $tipoServicio[0];
+                }    
+            }                                    
+            if(p.redPreferencia !== null){
+                var $redPreferencia = $filter('filter')($scope.listaRedPref,{value: p.redPreferencia},true); 
+                $scope.selectRedPreferencia = $redPreferencia[0];
+            }             
+            var $pais = $filter('filter')($scope.Listapais,{value: p.direccion[0].pais},true); 
+            $scope.modelPais = $pais[0];            
             $scope.getListaEstado();
             var $idEstado = $scope.prestadorDireccion[0].idEstado;
             console.log('ID_ESTADO'+$idEstado);
@@ -2831,11 +2869,24 @@ $scope.mostrarEditar = function(p){
             $scope.prestadorDireccion[0].latitud = parseFloat($lat);
             $scope.prestadorDireccion[0].longitud = parseFloat($lon);
             $scope.prestadorDireccion[0].codigoPostal = parseFloat($cp);
-            $scope.getListaDelegacion($idEstado);
-            
-            $('#element_to_pop_up').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});
+            $scope.getListaDelegacion($idEstado);            
+            $editando = $('#element_to_pop_up').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});
 }; 
-
+$scope.eliminar = function (idPrestador){
+    if(idPrestador !== null){        
+    }
+};
+$scope.resetResult = function(){    
+    $scope.mostrarBuscador = false;
+};
+$scope.fnAutoConsentido = function(){$scope.display = {redPreferencia:false,plan:false,gama:false};};
+$scope.fnAutoConChofer = function(){$scope.display = {redPreferencia:false,plan:false,gama:false};};
+$scope.fnTalleres = function(){$scope.display = {redPreferencia:true,plan:false,gama:false};};
+$scope.fnCristaleras = function(){$scope.display = {redPreferencia:true,plan:false,gama:false};};
+$scope.fnHospitales = function(){$scope.display = {redPreferencia:true,plan:true,gama:true};};
+$scope.fnMedicos = function(){$scope.display = {redPreferencia:true,plan:true,gama:true};}
+$scope.fnModHospitalarios = function(){$scope.display = {redPreferencia:false,plan:false,gama:false};};
+$scope.fnServAux= function(){$scope.display = {redPreferencia:false,plan:false,gama:false};};
 $('#yui_css1').click(function (){$scope.setTipoPrestador(4); $('#opc_1').siblings('li').removeClass('active'); $('#opc_1').addClass('active'); });    
 $('#yui_css2').click(function (){$scope.setTipoPrestador(0); $('#opc_2').siblings('li').removeClass('active'); $('#opc_2').addClass('active'); });
 $('#yui_css3').click(function (){$scope.setTipoPrestador(10);$('#opc_3').siblings('li').removeClass('active'); $('#opc_3').addClass('active'); });
