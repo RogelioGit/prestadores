@@ -5,58 +5,66 @@
     height: auto;
 }
 
-#success_{        
-    color: #FFF;
+#norecords_{        
+    color: #A7A7A7;
     display: none;
     padding: 20px;
     width: 400px;
     height: 150px;
     font: 16px/16px roboto-regular, arial, sans-serif;
-    font-size:large;
-    text-align: center;     
+    font-size: large;
+    text-align: center;
+    background: #fff;
+    line-height: 1.3;
+}
+.success-ok {
+  width: 33%;
+  margin: 0 auto;
+  background: #1470a6;
+  padding: 5px;
+  margin-top: 6%;
+  color: #fff;
+}
+.success-ok{
+  cursor: pointer;
 }
 
 .b-close{
-    cursor:pointer;
-    position:absolute;
-    right:10px;
-    top:5px;
-    font-size: large;
 }
 </style>
 <div ng-app="web_App" ng-controller="prestadoresAXACtrl">
 <div class="axamx-prestadores-header">
-		<h3>Estás buscando {{buscandoPor}}</h3>
-		<i class="fa fa-times fa-lg"  ></i>
-	</div>   
+        <h3>Estás buscando {{buscandoPor}}</h3>
+                <i class="fa fa-times fa-lg" ng-click="fn_clearsearch()" ></i>
+</div>   
 <div class="map-wrapper">
-		<div class="map-search">
-			<div class="container">
-				<div class="search-shadow" style="display: none;"></div>
-				<span class="select-button display-desktop">
-					<button class="advanced-search-button">
-						<i class="fa fa-align-justify"></i>
-					</button>
-				</span>
-				<span class="select-button mobile-search">
-					<button class="mobile-search-button">
-						<i class="fa fa-search"></i>
-					</button>
-				</span>
-				<form  class="default-form search-bar">
-					<span class="location select-box select-style">
+        <div class="map-search">
+            <div class="container">
+                <div class="search-shadow" style="display: none;"></div>
+                <span class="select-button display-desktop">
+                    <button class="advanced-search-button">
+                        <i class="fa fa-align-justify"></i>
+                    </button>
+                </span>
+                <span class="select-button mobile-search">
+                    <button class="mobile-search-button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+                <form  class="default-form search-bar">
+                    <span id="edo" class="location select-box select-style estado" title="Selecciona un Estado">
                                             <select name="Select_Location" data-placeholder="Selecciona un Estado"  ng-model="selectedEstado" 
                                                     ng-options="opt as opt.label for opt in listaDeEstados" ng-change="prestadoresArgs.estado=selectedEstado.value;getListaDelegacion(selectedEstado.value)" >
                                                     <option value="">Estado</option>
                                             </select>
-					</span>
+                    </span>
 
-					<span class="category  select-box select-style">
+                    <span class="category  select-box select-style">
                                             <select name="Select_Category" data-placeholder="Selecciona un Municipio" ng-model="selectedMunicipio" 
                                                     ng-options="opt as opt.label for opt in listaDelegaciones" ng-change="prestadoresArgs.delegacionMunicipio = selectedMunicipio.value" >
                                                     <option value="">Municipio</option>
                                             </select>
-					</span>
+                    </span>
                     <span class="company_name nombre-comun">
                                             <input  ng-model="prestadoresArgs.nombreComun"  type="text" 
                                                     placeholder="Nombre Común"
@@ -65,131 +73,151 @@
                                                     >
                     </span>
                     <span class="company_name especialidad">
-                        <input type="text" placeholder="Especialidad">
+                        <select name="especialidades_" data-placeholder="Selecciona una especialidad" ng-model="selectedEspecialidad" 
+                                ng-options="opt as opt.descripcion for opt in listaDeEspecialidad"  ng-change="prestadoresArgs.especialidad = selectedEspecialidad.idEspecialidad" >
+                            <option value="">Especialidad</option>
+                        </select>                        
                     </span>
-					<span class="submit-btn">
+                    <span class="submit-btn">
                                             <button class="btn btn-secondary full-width" ng-click="getPrestadores()" ><i class="fa fa-search"></i>Buscar</button>                                            
-					</span>
-				</form>
-			</div>
-			<!-- BUSQUEDA POR RAMO INICIA -->
-			<div class="advanced-search" style="display: none;">
-				<div class="axamx-prestadores">
-					<ul class="axa-servicios">
-						<li class="axa-servicios-group">
-							<img src="/documents/45516/49521/icon_quick-links_medicos.png/acff8821-7697-4313-9ab8-f37c2ce5a4cb?t=1453767667000">
-							<h5>Servicios de Salud</h5>
-							<ul class="axa-subservicios">
-								<li ng-click="setTipoPrestador(0);buscandoPor = 'Médicos'">
-									<a id="axa-medico">Médicos</a>
-								</li>
-								<li ng-click="setTipoPrestador(1);buscandoPor = 'Hospitales'">
-									<a id="axa-hospitales">Hospitales</a>
-								</li>
-								<li ng-click="setTipoPrestador(2);buscandoPor = 'Módulos Hospitalarios'">
-									<a id="axa-modulos">Módulos Hospitalarios</a>
-								</li>
-								<li ng-click="setTipoPrestador(3);buscandoPor = 'Servicios Auxiliares'">
-									<a id="axa-aux">Servicios Auxiliares</a>
-								</li>
-							</ul>
-						</li>
-						<li class="axa-servicios-group">
-							<img src="/documents/45516/49521/icon_quick-links_car.png/0b223157-015d-46d6-b1fe-5d43d09c67e5?t=1453767667000">
-							<h5>Servicios para Auto</h5>
-							<ul class="axa-subservicios">
-                                                            <li ng-click="setTipoPrestador(4)">
-									<a>Auto Consentido</a>
+                    </span>
+                </form>
+            </div>
+            <!-- BUSQUEDA POR RAMO INICIA -->
+            <div class="advanced-search" style="display: none;">
+                <div class="axamx-prestadores">
+                    <ul class="axa-servicios">
+                        <li class="axa-servicios-group">
+                            <img src="/documents/45516/49521/icon_quick-links_medicos.png/acff8821-7697-4313-9ab8-f37c2ce5a4cb?t=1453767667000">
+                            <h5>Servicios de Salud</h5>
+                            <ul class="axa-subservicios">
+                                <li ng-click="setTipoPrestador(0);fnbsda('Médicos','true','false')">
+                                    <a id="axa-medico">Médicos</a>
+                                </li>
+                                <li ng-click="setTipoPrestador(1);fnbsda('Hospitales','true','false')">
+                                    <a id="axa-hospitales">Hospitales</a>
+                                </li>
+                                <li ng-click="setTipoPrestador(2);fnbsda('Módulos Hospitalarios','false','false')">
+                                    <a id="axa-modulos">Módulos Hospitalarios</a>
+                                </li>
+                                <li ng-click="setTipoPrestador(3);fnbsda('Servicios Auxiliares','false','false')">
+                                    <a id="axa-aux">Servicios Auxiliares</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="axa-servicios-group">
+                            <img src="/documents/45516/49521/icon_quick-links_car.png/0b223157-015d-46d6-b1fe-5d43d09c67e5?t=1453767667000">
+                            <h5>Servicios para Auto</h5>
+                            <ul class="axa-subservicios">
+                                                            <li ng-click="setTipoPrestador(4);fnbsda('Auto Consentido','false','false')">
+                                    <a>Auto Consentido</a>
                                                             </li>
-                                                            <li ng-click="setTipoPrestador(5)">
-									<a>Auto con Chofer</a>
+                                                            <li ng-click="setTipoPrestador(5);fnbsda('Auto con chofer','false','false')">
+                                    <a>Auto con Chofer</a>
                                                             </li>
-                                                            <li ng-click="setTipoPrestador(6)">
-									<a>Talleres</a>
+                                                            <li ng-click="setTipoPrestador(6);fnbsda('Talleres','false','false')">
+                                    <a>Talleres</a>
                                                             </li>
-                                                            <li ng-click="setTipoPrestador(7)">
-									<a>Cristaleras</a>
+                                                            <li ng-click="setTipoPrestador(7);fnbsda('Cristaleras','false','false')">
+                                    <a>Cristaleras</a>
                                                             </li>
-							</ul>
-						</li>
-						<li class="axa-servicios-group">
-							<img src="/documents/45516/49521/icon_quick-links_travel.png/df0e4fa4-c5fa-416a-b4e9-47303f9ef2c2?t=1453767668000">
-							<h5>Otros Servicios</h5>
-							<ul class="axa-subservicios">
-								<li ng-click="setTipoPrestador(9)">
-									<a>Ventanillas</a>
-								</li>
-								<li ng-click="setTipoPrestador(8)">
-									<a>Agentes</a>
-								</li>
-								<li ng-click="setTipoPrestador(10)">
-									<a>Tiendas AXA</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<!--BUSQUEDA POR RAMO TERMINA -->
-		</div>
+                            </ul>
+                        </li>
+                        <li class="axa-servicios-group">
+                            <img src="/documents/45516/49521/icon_quick-links_travel.png/df0e4fa4-c5fa-416a-b4e9-47303f9ef2c2?t=1453767668000">
+                            <h5>Otros Servicios</h5>
+                            <ul class="axa-subservicios">
+                                <li ng-click="setTipoPrestador(9); fnbsda('Ventanillas','false','true')">
+                                    <a>Ventanillas</a>
+                                </li>
+                                <li ng-click="setTipoPrestador(8);fnbsda('Agentes','false','true')">
+                                    <a>Agentes</a>
+                                </li>
+                                <li ng-click="setTipoPrestador(10);fnbsda('Hospitales','false','true')">
+                                    <a>Tiendas AXA</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--BUSQUEDA POR RAMO TERMINA -->
+        </div>
 </div>
 
 
 <div class="axamx-background">
 
 
-		<div id="map" style="width:100%;height:487px;"></div>
-		<div class="type-selector">
-			<div class="type-selector-map active">
-				<i class="fa fa-map-o fa-lg"></i>
-			</div>
-			<div class="type-selector-accordion">
-				<i class="fa fa-list-ul fa-lg"></i>
-			</div>
-		</div>
+        <div id="map" style="width:100%;height:487px;"></div>
+        <div class="type-selector">
+            <div class="type-selector-map active">
+                <i class="fa fa-map-o fa-lg"></i>
+            </div>
+            <div class="type-selector-accordion">
+                <i class="fa fa-list-ul fa-lg"></i>
+            </div>
+        </div>
 </div>
 
 <div class="service-list">
-		<div class="container">
-		
-			<div id="myToggler" >
+        <div class="container">
+        
+            <div id="myToggler" >
                             <div ng-repeat="li in listaPrestadores" >
-                                <h4 class="header toggler-header-collapsed" ng-bind="li.nombre" ></h4>
-				<div class="content toggler-content-collapsed">
-							<div class="info-gral">
-								<p class="info-nombre">Nombre Común</p>
-                                                                <p ng-bind="li.nombre" ></p>
-								<p>{{li.plan }} y {{ li.gama }} / Especialidad</p>
-							</div>
-							<div class="info-dir">
-								<p>Nombre Calle Ext/Int</p>
-								<p>Colonia Nombre</p>
-								<p>Delegación Nombre</p>
-								<p>Estado</p>
-							</div>
-							<div class="info-horarios">
-                                                            <p ng-bind="'Horario 1:' + li.horarioAtencion1" ></p>
-                                                            <p ng-bind="'Horario 2:' + li.horarioAtencion2"> </p>
-							</div>
-							<div class="info-tel">
-                                                                <p>Tel1. 55 5555 5555</p>
-								<p>Tel2. 55 5555 5555</p>
-								<p>Cel1. 55 5555 5555</p>
-							</div>
-							<div class="info-mail">
-                                                            <a href="#" ng-bind="li.emails[0].email"> </a>                                                            
-							</div>	
-				</div>			
+                                <h4 class="header toggler-header toggler-header-collapsed"><i class="fa fa-map-marker fa-lg"></i> <span ng-bind="li.nombre"></span><i class="chevron-icon fa fa-lg fa-angle-down"></i></h4>
+                <div class="content toggler-content-collapsed">
+                            <div class="info-gral">
+                                <p ng-bind="'Red Prefrencia:'+ (li.redPreferencia || 'No')"></p>
+                                <p ng-bind="'Plan:'+(li.plan || 'No')"></p>
+                                <p ng-bind="'Gama:'+(li.gama || 'No')" > </p>                                 
+                                <div ng-show="argsPrestadores.conEspecialidad">
+                                    <p>Especialidad:</p>
+                                    <div ng-repeat="es in li.especialidad">
+                                        <p ng-bind="es.descripcion"> </p>
+                                    </div>                                    
+                                </div>
+                                <div ng-show="argsPrestadores.esAgentes">
+                                    <p>Ramos:</p>
+                                    <div ng-repeat="r in li.agenteRamos ">
+                                        <p ng-bind="r.descripcion"> </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info-dir">
+                                <p ng-bind="li.direccion[0].calle +' No. Ext: '+li.direccion[0].numeroExterior+'/No. Int:'+ (li.direccion[0].numeroInterior || '')"></p>
+                                <p ng-bind="li.direccion[0].colonia"></p>
+                                <p ng-bind="li.direccion[0].municipio"></p>
+                                <p ng-bind="li.direccion[0].estado"></p>
+                            </div>
+                            <div class="info-horarios">
+                                <p ng-bind="'Horario 1:' + li.horarioAtencion1" ></p>
+                                <p ng-bind="'Horario 2:' + (li.horarioAtencion2 || '')"> </p>
+                            </div>
+                            <div class="info-tel">
+                                <div ng-repeat="t in li.direccion[0].telefonos">
+                                    <p ng-bind="t.numero+' Ext:'+ (t.extension || '')"></p>
+                                </div>
+                            </div>
+                            <div class="info-mail">
+                                <div ng-repeat="e in li.emails ">
+                                    <a href="#" ng-bind="e.email"></a>
+                                </div>                                                                                                                    
+                            </div>  
+                </div>          
                             </div>
                         </div>
-			
-		</div>
+            
+        </div>
 </div>
 <div id="loading_">
     <img src="/documents/45516/49001/Esfera-Loading-62156.gif">
 </div>
-<div id="success_">    
-    No se econtraron registros, intente con otro criterio de búsqueda.<br>      
+<div id="norecords_">    
+    No se econtraron registros, intente con otro criterio de búsqueda.<br>    
+    <div class="success-ok b-close" >
+        <span>Aceptar</span>
+    </div> 
 </div>
     
 </div>
@@ -208,39 +236,21 @@
 <script>
      var app = angular.module('web_App', ['ngCookies','ngResource','ngRoute','ngSanitize','ngAnimate','ui.bootstrap']);
      app.controller('prestadoresAXACtrl',['$scope','$http','$filter','$q',
-         function($scope,$http,$filter,$q){
-
-        $scope.metodo = [{type:'POST'}];   
-        
+         function($scope,$http,$filter){        
+        $scope.metodo = [{type:'POST'}];           
         $scope.catalogos = [{name:"CATESTADO"},{name:"CATMUNICIPIO"},{name:"CATIPOPRESTADOR"}];    
-                    
+        $scope.estado = 'DISTRITO FEDERAL';
         //Lista tipo de prestador
         $scope.lTP = [{tp:"HOSPITALES"},{tp:"MEDICOS"},{tp:"MODULOS HOSPITALARIOS"},{tp:"SERVICIOS AUXILIARES"},{tp:"AUTO CONSENTIDO"},{tp:"AUTO CON CHOFER"},{tp:"TALLERES"},{tp:"CRISTALERAS"},{tp:"AGENTES"},{tp:"VIAS"},{tp:"TIENDAS AXA"}];            
         
-        $scope.rutas = [{url:"http://10.133.13.96:8080/PrestadoresAxaServices/rest/prestadoresServicio/getCatalogosRequest"},{url:"http://10.133.13.96:8080/PrestadoresAxaServices/rest/prestadoresServicio/getPrestadoresServicio"}];
+        $scope.rutas = [{url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getCatalogosRequest"},
+            {url:"http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getPrestadoresServicio"},
+        {url:'http://localhost:8080/PrestadoresAxaServices/rest/prestadoresServicio/getEspecialidadesRequest'}];
             
-        $scope.prestadoresArgs ={estado:"2",delegacionMunicipio:"",nombreComun:"",especialidad:"",tipoPrestador:"",rfc:""};
+        $scope.prestadoresArgs ={estado:"",delegacionMunicipio:"",nombreComun:"",especialidad:"",tipoPrestador:"",rfc:""};
 
           
         $scope.argsPrestadores = {editar:false,conEspecialidad:false,esAgentes:false,prestadoresArgs:{}};
-        
-        $scope.getListaEstado = function (){
-            $scope.args = {};
-            $scope.args.cveCatalogo=$scope.catalogos[0].name; 
-            try {
-            $http({
-                    method:$scope.metodo[0].type,
-                    data  :$scope.args,
-                    url   :$scope.rutas[0].url
-            }).success(function(data){
-                $scope.listaDeEstados = data.listaCatalogos;
-                console.log("obteniendo datos de estados");
-            });        
-            } catch (e) {
-                console.log("Error al consultar estados");
-            }    
-        };        
-        $scope.getListaEstado();
         
         $scope.getListaDelegacion = function(idestado){    
             if(idestado !== "" || idestado !== " "){
@@ -260,64 +270,105 @@
                     console.log("Error al consultar delegaciones");
             }
             }
-        };                    
+        };
+                            
         function utilValida(val,etiqueta){
             var res;
             if(val !== null ){
                 res = etiqueta+ ':' + val;
             }else{
                 res = '';
-            }
-            
+            }            
             return res;
         };
         
         function setContentValue(p,dir){
-	var contentString =
-	'<div class="info-tag">'+
-	'<div><img src="/documents/47849/49735/Star-icon.png/cf1810e3-fe35-40e9-8252-edf9212f8ef0?t=1453767670000"/></div>'+
-	'<div class="info-gral">'+
-	'<p class="info-nombre">'+p.nombre +'</p>'+
-	'<p>'+utilValida(p.redPreferencia,'Red Preferencia')+'</p>'+
-	'<p>'+utilValida(p.plan,'Plan')+' '+utilValida(p.gama,'Gama')+' / Especialidad</p>'+
-	'</div>'+
-	'<div><img src="/documents/47849/49735/location-icon.png/df4bcb6b-501e-4cd4-94cb-7476c78c3b0f?t=1453767668000"/></div>'+
-	'<div class="info-dir">'+
-	'<p>'+utilValida(dir.calle,'Calle')+'/Num Ext:'+dir.numeroExterior+''+utilValida(dir.numeroInterior,'/Num Int')+'</p>'+
-	'<p>'+utilValida(dir.colonia,'Colonia')+'</p>'+
-	'<p>'+utilValida(dir.municipio,'Delegación/Municipio')+'</p>'+
-	'<p>'+utilValida(dir.estado,'Estado')+'</p>'+
-	'</div>'+
-	'<div><img src="/documents/47849/49735/clock-icon.png/50bbafe9-8390-4ecc-8f8a-bce85c7fc795?t=1453767665000"/></div>'+
-	'<div class="info-horarios">'+
-	'<p>'+utilValida(p.horarioAtencion1,'Horario 1')+' </p>'+
-	'<p>'+utilValida(p.horarioAtencion1,'Horario 1')+'</p>'+
-	'</div>'+
-	'<div><img src="/documents/47849/49735/phone-icon.png/7741e82e-c3dc-424f-ae8e-6ecdb6a35b59?t=1453767670000"/></div>'+
-	'<div class="info-tel">'+
-	'<p>Tel1. 55 5555 5555</p>'+
-	'<p>Tel2. 55 5555 5555</p>'+
-	'<p>Cel. 55 5555 5555</p>'+
-	'</div>'+
-	'<div><img src="/documents/47849/49735/mail-icon.png/b77e4878-eba9-4f4a-950c-399151557e5f?t=1453767669000"/></div>'+
-	'<div class="info-mail">'+
-	'<a href="#">'+p.emails[0].email+'</a>'+
-	'</div>'+
-	'</div>';    
+        var mailto = ''; 
+        var teles = '';
+        for(e= 0; e < p.emails.length ; e++){
+            mailto = mailto + '<a href>'+p.emails[e].email+'</a><br>';             
+        }
+        for(l=0;l < dir.telefonos.length ;l++){
+            if(dir.telefonos[l].extension !== null && dir.telefonos[l].extension !== ' '){
+                teles = teles + '<p>Tel'+(l+1)+'. '+dir.telefonos[l].numero+' Ext.'+dir.telefonos[l].extension+'</p>';
+            }else{
+                teles = teles + '<p>Tel'+(l+1)+'. '+dir.telefonos[l].numero+'</p>';
+            }            
+        }
+        var rPreferencia = 'Red Preferencia: ';
+        if(p.redPreferencia !== null && p.redPreferencia  !== ' '){
+            rPreferencia = rPreferencia+p.redPreferencia;
+        }else{
+            rPreferencia = rPreferencia + 'NO';
+        }
+        var planGama = '';
+        if(p.plan !== null && p.plan !== ''){
+            planGama = 'Plan: '+ p.plan;
+        }
+        if(p.gama !== null && p.gama !== '' ){
+            planGama = planGama + ' /Gama: '+ p.gama;
+        }
+        var es = '';
+        if(p.especialidad !== null){                
+        for(t = 0; t < p.especialidad.length ; t++){
+            if(p.especialidad[t].descripcion !== null && p.especialidad[t].descripcion !== '' ){
+                if(t === 0){
+                    es = 'Especialidad: ';
+                }
+                es = es + p.especialidad[t].descripcion + '/';
+            }
+        }                 
+        }
+        var ramos = '';
+        if(p.agenteRamos !== null){        
+        for(w=0; w < p.agenteRamos.length; w++){
+            if(p.agenteRamos[w].descripcion !== null && p.agenteRamos[w].descripcion !== ''){
+                if(w === 0){
+                    ramos = 'Ramos: ';
+                }
+               ramos=ramos +  p.agenteRamos[w].descripcion + '/';
+            }
+        }          
+        }
         
+        var contentString =
+        '<div class="info-tag">'+
+        '<div><img src="/documents/47849/49735/Star-icon.png/cf1810e3-fe35-40e9-8252-edf9212f8ef0?t=1453767670000"/></div>'+
+        '<div class="info-gral">'+
+        '<p class="info-nombre">'+p.nombre +'</p>'+
+        '<p>'+rPreferencia+'</p>'+
+        '<p>'+planGama+'</p>'+'<p>'+es+'</p>'+'<p>'+ramos+'</p>'+        
+        '</div>'+
+        '<div><img src="/documents/47849/49735/location-icon.png/df4bcb6b-501e-4cd4-94cb-7476c78c3b0f?t=1453767668000"/></div>'+
+        '<div class="info-dir">'+
+        '<p>'+utilValida(dir.calle,'Calle')+'/Num Ext:'+dir.numeroExterior+''+utilValida(dir.numeroInterior,'/Num Int')+'</p>'+
+        '<p>'+utilValida(dir.colonia,'Colonia')+'</p>'+
+        '<p>'+utilValida(dir.municipio,'Delegación/Municipio')+'</p>'+
+        '<p>'+utilValida(dir.estado,'Estado')+'</p>'+
+        '</div>'+
+        '<div><img src="/documents/47849/49735/clock-icon.png/50bbafe9-8390-4ecc-8f8a-bce85c7fc795?t=1453767665000"/></div>'+
+        '<div class="info-horarios">'+
+        '<p>'+utilValida(p.horarioAtencion1,'Horario 1')+' </p>'+
+        '<p>'+utilValida(p.horarioAtencion1,'Horario 2')+'</p>'+
+        '</div>'+
+        '<div><img src="/documents/47849/49735/phone-icon.png/7741e82e-c3dc-424f-ae8e-6ecdb6a35b59?t=1453767670000"/></div>'+
+        '<div class="info-tel">'+teles+
+        '</div>'+
+        '<div><img src="/documents/47849/49735/mail-icon.png/b77e4878-eba9-4f4a-950c-399151557e5f?t=1453767669000"/></div>'+
+        '<div id="tesmail" class="info-mail">'+ mailto + 
+        '</div>'+
+        '</div>';            
         return contentString;
         };
-
+        
         var mexico = {lat: 19.372982, lng: -99.173814}; 
         
         var map = new google.maps.Map(document.getElementById('map'), {
-		zoom: 10,
-		center: mexico,
-		scrollwheel: false,
-		mapTypeControl: false
-        });
-        
-        var infowindow = new google.maps.InfoWindow();
+        zoom: 8,
+        center: mexico,
+        scrollwheel: false,
+        mapTypeControl: false
+        });                
         var marker, i;
         var p;
         var dir;
@@ -336,25 +387,26 @@
         function loadMarkers(){              
             clearMarkers();
             for(i = 0; i < $scope.listaPrestadores.length ;i++){                
-                p = $scope.listaPrestadores[i];
+                p = $scope.listaPrestadores[i];                                
                 if(p.direccion !== null ){
                     dir = p.direccion[0];
-                    if(dir.latitud !== null && dir.longitud !== null ){
-                        var ltg = new google.maps.LatLng(dir.latitud,dir.longitud);
-                        map.setCenter(ltg);
+                    if(dir.latitud !== null && dir.longitud !== null && dir.latitud !== '0' && dir.longitud !== '0'){
+                        var ltg = new google.maps.LatLng(dir.latitud,dir.longitud);                        
                         marker = new google.maps.Marker({
                             position: ltg,
                             map: map,
                             title:p.nombre,
                             icon: '/documents/47849/49735/Map-Marker-Marker-Outside-Pink-icon+%281%29.png/4c7e5a53-0bbb-4491-a4eb-5b756e2e35b5?t=1453767669000'
-                        });
-                        google.maps.event.addListener(marker, 'click', (
-                                function(marker) { 
-                                    return function() { 
-                                        infowindow.setContent(setContentValue(p,dir)); 
-                                        infowindow.open(map, marker); 
-                                    }; 
-                                })(marker, i));                                                                
+                        });                        
+                        map.setCenter(marker.getPosition());                        
+                        var content = setContentValue(p,dir);
+                        var infowindow = new google.maps.InfoWindow();
+                        google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
+                                return function() {
+                                    infowindow.setContent(content);
+                                    infowindow.open(map,marker);
+                                };
+                        })(marker,content,infowindow));                                                        
                     markers.push(marker);                        
                     }  
                 }                                             
@@ -362,36 +414,11 @@
         };        
          
         $scope.noRecords = function(){
-          $('#success_').bPopup({modalClose: true,opacity: 0.3,positionStyle: 'fixed'});  
+          $('#norecords_').bPopup({modalClose: true,opacity: 0.3,positionStyle: 'fixed'});  
         };
-        $scope.getPrestadores = function(){		        
-		        $scope.argsPrestadores.prestadoresArgs = $scope.prestadoresArgs;
-                        
-                            var cargando = $('#loading_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});
-                            try{
-                                $http({
-			             method :$scope.metodo[0].type,
-			             data   :$scope.argsPrestadores,
-			             url    :$scope.rutas[1].url
-                                }).success(function(data){                                    
-                                    if (data.estatus.success){
-                                        $scope.listaPrestadores = data.prestadorServicio; 
-                                        loadMarkers();    
-                                        cargando.close();
-                                    } else{
-                                        cargando.close();
-                                        $scope.listaPrestadores=[];
-                                        $scope.noRecords();
-                                    }                                        
-                                    console.log(data);                            
-                                });           
-                                $scope.argsPrestadores.esAgentes = false;
-                            }catch(e){
-                                console.log("Error al consultar prestadores");
-                            } 
-                        $scope.prestadoresArgs.nombreComun = "";
-                            
-        }; 
+        $scope.closenoRecords = function(){
+          $('#norecords_').bPopup().close();   
+        };            
         
         $scope.listaTipoPrestadores = [];        
         $scope.getTipoPrestadores = function(){
@@ -412,9 +439,10 @@
         };
         
         $scope.getTipoPrestadores();
-        
+        var $cveprestador=-1;
         $scope.setTipoPrestador = function (cvTipPrestador){
             if(cvTipPrestador !== ""){
+                $cveprestador = cvTipPrestador;
                 var $tipoPredorId = $filter('filter')($scope.listaTipoPrestadores,
                 {label : $scope.lTP[cvTipPrestador].tp},true);
                 $scope.prestadoresArgs.tipoPrestador = $tipoPredorId[0].value;
@@ -424,36 +452,134 @@
 
         $scope.setAgenteTAXA = function(){
             $scope.argsPrestadores.esAgentes = true;
-        };
-        
-        $scope.getPrestadores();
-        
-	$('.collapsed').collapse({
-		toggle: true
-	});
-        
-     }]);
- 
- 
-function initMap(){}; 
+        };        
+               
+        $('.collapsed').collapse({
+            toggle: true
+        });
 
+        $scope.getPrestadores = function(){            
+            if($scope.selectedEstado === null  || $scope.selectedEstado === ' '){  
+                tooltipEstado();
+            }else{                                                        
+                            $scope.argsPrestadores.prestadoresArgs = $scope.prestadoresArgs;                        
+                            var cargando = $('#loading_').bPopup({modalClose: false,opacity: 0.3,positionStyle: 'fixed'});
+                            try{
+                                $http({
+                                    method:$scope.metodo[0].type,
+                                    data:$scope.argsPrestadores,
+                                    url:$scope.rutas[1].url
+                                }).success(function(data){                                    
+                                    if (data.estatus.success){
+                                        $scope.listaPrestadores = data.prestadorServicio; 
+                                        loadMarkers();    
+                                        cargando.close();
+                                    } else{
+                                        cargando.close();
+                                        $scope.listaPrestadores=[];
+                                        $scope.noRecords();
+                                    }                                        
+                                    console.log(data);                            
+                                });           
+                                $scope.argsPrestadores.esAgentes = false;
+                            }catch(e){
+                                console.log("Error al consultar prestadores");
+                            }                                         
+            }                                                    
+        };                        
+        $scope.getListaEstado = function (){
+            $scope.args = {};
+            $scope.args.cveCatalogo=$scope.catalogos[0].name; 
+            try {
+            $http({
+                    method:$scope.metodo[0].type,
+                    data  :$scope.args,
+                    url   :$scope.rutas[0].url
+            }).success(function(data){                 
+                if(data.estatus.success){
+                    $scope.listaDeEstados = data.listaCatalogos;
+                    var $estadoP = $filter('filter')($scope.listaDeEstados,{label :$scope.estado},true);
+                        if($estadoP !== null && $estadoP !== ' '){
+                            $scope.selectedEstado = $estadoP[0]; 
+                            $scope.prestadoresArgs.estado = $estadoP[0].value;                            
+                        }else{
+                            $scope.selectedEstado = null;
+                        } 
+                    $scope.getPrestadores();
+                }
+            });        
+            } catch (e) {
+                console.log("Error al consultar estados");
+            }    
+        };        
+        $scope.getListaEstado();        
+    $scope.fn_clearsearch = function(){
+            $scope.prestadoresArgs.tipoPrestador="";
+            $scope.argsPrestadores.conEspecialidad = false;
+            $scope.argsPrestadores.esAgentes = false;
+            var espec = $(".search-bar .especialidad").css("display");
+            if(espec !== 'none'){
+              $(".search-bar span").css("width", "100%");
+              $(".search-bar .especialidad").toggle();
+            }
+            
+    };       
+    $scope.getEspecialidades = function(){
+        if($scope.prestadoresArgs.tipoPrestador !== "" && $cveprestador > -1){
+        $scope.args = {idTipoPrestador:$scope.lTP[$cveprestador].tp};            
+        try{
+            $http({ 
+                method:$scope.metodo[0].type,
+                data:  $scope.args,
+                url :  $scope.rutas[2].url
+            }).success(function(data){
+                $scope.listaDeEspecialidad = data.listaEspecialidades;
+                console.log('obteniendo lista de especialidades');
+            });        
+        }catch(e){
+            console.log('Error en la petición de especialidades');
+        }    
+        }          
+    };    
+    
+    $scope.fnbsda = function(title,especialidad,agente){
+        $scope.argsPrestadores.conEspecialidad=especialidad;      
+        $scope.argsPrestadores.esAgentes = agente;                
+        $scope.buscandoPor = title;   
+        var espec = $(".search-bar .especialidad").css("display");
+        if(especialidad === 'true'){
+            $scope.getEspecialidades();            
+            if(espec === "none"){
+                $(".search-bar span").css("width", "20%");
+                $(".search-bar .especialidad").toggle();
+            }
+        }else{
+          if(espec !== 'none'){
+              $(".search-bar span").css("width", "100%");
+              $(".search-bar .especialidad").toggle();
+          }
+        }
+    };
+    
+     }]);
+function initMap(){}; 
 YUI().use(
         'aui-toggler',
          function(Y) {
              new Y.TogglerDelegate(
                      {
-                         animated: true,
-                 closeAllOnExpand: true,
-			        container: '#myToggler',
-			        content: '.content',
-			        expanded: false,
-			        header: '.header',
-			        transition: {
-			          duration: 0.2,
-			          easing: 'cubic-bezier(0, 0.1, 0, 1)'
-			        }
-			      }
-			    );
+                    animated: true,
+                    closeAllOnExpand: true,
+                    container: '#myToggler',
+                    content: '.content',
+                    expanded: false,
+                    header: '.header',
+                    transition: {
+                      duration: 0.2,
+                      easing: 'cubic-bezier(0, 0.1, 0, 1)'
+                    }
+                  }
+                );
     }
 );
 </script>
